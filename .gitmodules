@@ -1,0 +1,4 @@
+[submodule "src/lib/acyswap-sdk"]
+	path = src/lib/acyswap-sdk
+	url = git@github.com:ACY-Labs/acyswap-sdk.git
+	branch = dev

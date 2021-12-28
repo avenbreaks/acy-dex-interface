@@ -8,7 +8,7 @@ import {
   Token,
   TokenAmount,
   WETH,
-} from '@acyswap/sdk';
+} from '@/lib/acyswap-sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseUnits } from '@ethersproject/units';
 import {

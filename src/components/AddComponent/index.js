@@ -70,7 +70,7 @@ import {
   CurrencyAmount,
   InsufficientReservesError,
   FACTORY_ADDRESS,
-} from '@acyswap/sdk';
+} from '@/lib/acyswap-sdk';
 
 import { MaxUint256 } from '@ethersproject/constants';
 import { BigNumber } from '@ethersproject/bignumber';

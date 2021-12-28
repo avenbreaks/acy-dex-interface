@@ -13,7 +13,7 @@ import {
 } from '@/acy-dex-swap/utils/index';
 
 import { Icon } from "antd";
-import { Fetcher, Percent, Token, TokenAmount, Pair } from '@acyswap/sdk';
+import { Fetcher, Percent, Token, TokenAmount, Pair } from '@/lib/acyswap-sdk';
 import AcyRemoveLiquidityModal from '@/components/AcyRemoveLiquidityModal';
 import { isMobile } from 'react-device-detect';
 import styles from './styles.less';

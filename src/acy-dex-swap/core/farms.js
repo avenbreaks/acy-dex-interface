@@ -19,7 +19,7 @@ import {
   RPC_URL,
   API_URL
 } from '@/acy-dex-swap/utils';
-import { Fetcher, Token, TokenAmount, Pair} from '@acyswap/sdk';
+import { Fetcher, Token, TokenAmount, Pair} from '@/lib/acyswap-sdk';
 import { abi as FarmsABI } from '../abis/ACYMultiFarm.json';
 import Eth from "web3-eth";
 import Utils from "web3-utils";

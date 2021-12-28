@@ -3,7 +3,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { getAddress } from '@ethersproject/address';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, Button, Dropdown, Form, FormControl, InputGroup } from 'react-bootstrap';
-import { ETHER, Fetcher, Percent, Token, TokenAmount, WETH, CurrencyAmount } from '@acyswap/sdk';
+import { ETHER, Fetcher, Percent, Token, TokenAmount, WETH, CurrencyAmount } from '@/lib/acyswap-sdk';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseUnits } from '@ethersproject/units';

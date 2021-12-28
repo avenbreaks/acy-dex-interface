@@ -13,7 +13,7 @@ import {
   Trade,
   TradeType,
   WETH,
-} from '@acyswap/sdk';
+} from '@/lib/acyswap-sdk';
 
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseUnits, formatUnits } from '@ethersproject/units';

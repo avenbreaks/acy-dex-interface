@@ -5,7 +5,7 @@ import { AddressZero, MaxUint256 } from '@ethersproject/constants';
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits, parseUnits } from '@ethersproject/units';
 import { Interface } from '@ethersproject/abi';
-import { JSBI, Token, TokenAmount, Percent, ETHER, CurrencyAmount, Fetcher, Pair } from '@acyswap/sdk';
+import { JSBI, Token, TokenAmount, Percent, ETHER, CurrencyAmount, Fetcher, Pair } from '@/lib/acyswap-sdk';
 import ACYRouterABI from '../abis/AcyV1Router02.json';
 import FlashArbitrageABI from '../abis/AcyV1FlashArbitrage.json';
 import { abi as FarmsABI } from '../abis/ACYMultiFarm.json';

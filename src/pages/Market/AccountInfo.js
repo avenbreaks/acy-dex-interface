@@ -35,7 +35,7 @@ import {
   fetchTotalValueSwapped,
   fetchTotalTransactions
 } from './Data/walletStats'
-import { Fetcher, Percent, Token, TokenAmount, Pair } from '@acyswap/sdk';
+import { Fetcher, Percent, Token, TokenAmount, Pair } from '@/lib/acyswap-sdk';
 import { binance, injected } from '@/connectors';
 import ConstantLoader from '@/constants';
 const scanUrlPrefix = ConstantLoader().scanUrlPrefix;

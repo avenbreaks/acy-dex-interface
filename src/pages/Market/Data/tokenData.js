@@ -14,9 +14,9 @@ import {getAllSuportedTokensPrice} from '@/acy-dex-swap/utils/index';
 import {findTokenWithAddress} from '@/utils/txData';
 import {totalInUSD} from '@/utils/utils';
 import { symbol } from 'prop-types';
-import {constantInstance} from '@/constants';
-const uniqueTokens = constantInstance.tokenList;
-const apiUrlPrefix = constantInstance.farmSetting.API_URL;
+import {constantInstance, API_URL, TOKENLIST} from '@/constants';
+const uniqueTokens = TOKENLIST(); 
+const apiUrlPrefix = API_URL();
 
 export async function fetchTokenInfo(client, tokenAddress, timestamp) {
   const block = await getBlockFromTimestamp(timestamp);
@@ -89,7 +89,7 @@ function parseTokenData (data){
   //INIT TOKEN LIST;
   let newData = [];
 
-  uniqueTokens.forEach(element => {
+  TOKENLIST().forEach(element => {
     newData.push({
       address : element.address,
       name : element.name,
@@ -146,7 +146,7 @@ export async function fetchGeneralTokenInfo() {
   // FOLLOWING CODE WILL BE WORKING ONCE THE SERVICE IS ON !
   tokensPriceUSD = await getAllSuportedTokensPrice();
   try{
-    let request = `${apiUrlPrefix}/poolchart/all`;
+    let request = `${API_URL()}/poolchart/all`;
     // let request = 'http://localhost:3001/api/poolchart/all';
     let response = await fetch(request);
     let data = await response.json();

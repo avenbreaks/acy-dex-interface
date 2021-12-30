@@ -24,7 +24,7 @@ import {
   fetchTokensFromId,
   fetchPoolsFromId,
 } from './Data';
-import {constantInstance} from "@/constants";
+import {constantInstance, TOKENLIST, SCAN_URL_PREFIX} from "@/constants";
 
 const tokenList = constantInstance.tokenList;
 const scanUrlPrefix = constantInstance.scanUrlPrefix;
@@ -705,7 +705,7 @@ export function TransactionTable(props) {
             <div
               className={className(styles.tableDataFirstColumn, styles.transactionLink)}
               style={{ fontWeight: 600 }}
-              onClick={() => openInNewTab(`${scanUrlPrefix}/tx/${entry.transactionID}`)}
+              onClick={() => openInNewTab(`${SCAN_URL_PREFIX()}/tx/${entry.transactionID}`)}
             >
               {entry.type} {entry.coin1} {entry.action == TransactionType.SWAP ? 'for' : 'and'}{' '}
               {entry.coin2}
@@ -820,7 +820,7 @@ export function TransactionTable(props) {
         render: (text, entry) => {
           return (
             <div
-              onClick={() => openInNewTab(`${scanUrlPrefix}/address/${entry.account}`)}
+              onClick={() => openInNewTab(`${SCAN_URL_PREFIX()}/address/${entry.account}`)}
               className={className(styles.tableData, styles.transactionLink)}
               style={{ textOverflow: 'ellipsis' }}
             >
@@ -995,7 +995,7 @@ export const MarketSearchBar = props => {
     lastPromiseWrapper(fetchTokenSearch(marketClient, e.target.value)).then(data => {
       console.log('token info:',data);
       setSearchCoinReturns(
-        tokenList.map(item => {
+        TOKENLIST().map(item => {
           return { logoURL: item.logoURI, address: item.address, name: item.name, short: item.symbol };
         })
       );
@@ -1096,7 +1096,7 @@ export const MarketSearchBar = props => {
     lastPromiseWrapper(fetchTokenSearch(marketClient, '')).then(data => {
       console.log("FETCHING TOKENS FROM SEARCH BAR", data)
       setSearchCoinReturns(
-        tokenList.map(item => {
+        TOKENLIST().map(item => {
           return { logoURL: item.logoURI, address: item.address, name: item.name, short: item.symbol };
         })
       );

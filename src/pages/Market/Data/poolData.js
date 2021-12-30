@@ -16,10 +16,10 @@ import {getAllSuportedTokensPrice} from '@/acy-dex-swap/utils/index';
 import {findTokenWithAddress} from '@/utils/txData';
 
 import {totalInUSD} from '@/utils/utils'
-import {constantInstance} from '@/constants';
+import {constantInstance, TOKENLIST, API_URL} from '@/constants';
 
-const supportedTokens = constantInstance.tokenList;
-const apiUrlPrefix = constantInstance.farmSetting.API_URL;
+const supportedTokens = TOKENLIST();
+const apiUrlPrefix = API_URL();
 
 export async function fetchPoolInfo(client, address, timestamp) {
   const block = await getBlockFromTimestamp(timestamp);
@@ -141,7 +141,7 @@ export async function fetchGeneralPoolInfoDay() {
   // FOLLOWING CODE WILL BE WORKING ONCE THE SERVICE IS ON !
   tokensPriceUSD = await getAllSuportedTokensPrice();
   try{
-    let request = `${apiUrlPrefix}/poolchart/all`;
+    let request = `${API_URL()}/poolchart/all`;
     let response = await fetch(request);
     let data = await response.json();
     return parsePoolData(data.data);

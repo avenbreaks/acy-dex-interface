@@ -4,8 +4,8 @@ import { convertTx, ACY_ROUTER } from './util';
 import axios from 'axios';
 import {getTransactionsByAccount} from '@/utils/txData'
 import { getLibrary } from '../ConnectWallet';
-import {constantInstance} from '@/constants';
-const apiUrlPrefix = constantInstance.farmSetting.API_URL;
+import {constantInstance, API_URL} from '@/constants';
+// const apiUrlPrefix = API_URL();
 // SAMPLE TRANSACTION DATA
 // {
 //     coin1: 'USDC',
@@ -173,7 +173,7 @@ async function parseTopExchangeVolume(userList,library){
 
 export async function fetchTopExchangeVolume(library){
  try{
-   let request = `${apiUrlPrefix}/users/all`;
+   let request = `${API_URL()}/users/all`;
    let response = await fetch(request);
    let data = await response.json();
    console.log(data.data);

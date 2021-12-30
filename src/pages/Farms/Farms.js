@@ -112,12 +112,9 @@ const Farms = (props) => {
   const getPools = async (library, account, chainId) => {
     setIsLoadingPool(true);
     const pools = await newGetAllPools(library, account, chainId);
-    console.log("TEST getAllPools",pools);
-    console.log("end get pools");
     const block = await library.getBlockNumber();
     const newFarmsContents = [];
     let ismyfarm = false;
-    console.log("GETALLPOOLS:",pools);
     pools&&pools.forEach((pool,idx) => {
       const newFarmsContent = {
         index: idx,
@@ -191,7 +188,7 @@ const Farms = (props) => {
       }
       if (account) {
         setWalletConnected(true);
-        console.log("start getPools");
+        console.log("start getPools",library,chainId);
         getPools(library, account, chainId);
         
       } else {
@@ -325,7 +322,7 @@ const Farms = (props) => {
         </div>
         {selectedTable !== 4 && (
           <FarmsTable
-            tableRow={walletConnected?farmsContent:notLogginFarmContent}
+            tableRow={farmsContent}
             tableTitle={tableTitle}
             tableSubtitle={tableSubtitle}
             rowNumber={rowNumber}

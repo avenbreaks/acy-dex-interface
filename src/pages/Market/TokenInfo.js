@@ -28,9 +28,9 @@ import { convertPoolForList } from './Data/util.js';
 import { MarketSearchBar, PoolTable, TransactionTable } from './UtilComponent.js';
 import { WatchlistManager } from './WatchlistManager.js';
 import ConnectWallet from './ConnectWallet';
-import {constantInstance} from "@/constants";
+import {SCAN_URL_PREFIX} from "@/constants";
 
-const scanUrlPrefix = constantInstance.scanUrlPrefix;
+// const scanUrlPrefix = constantInstance.scanUrlPrefix;
 
 const watchlistManagerToken = new WatchlistManager('token');
 
@@ -326,7 +326,7 @@ function MarketTokenInfo(props) {
                 style={{ marginLeft: '10px' }}
                 width={16}
                 onClick={() => {
-                  openInNewTab(`${scanUrlPrefix}/token/${tokenData.address}`);
+                  openInNewTab(`${SCAN_URL_PREFIX()}/token/${tokenData.address}`);
                 }}
               />
             </>

@@ -263,6 +263,8 @@ export async function getEstimated(
     ['CURRENCY_B']: calculateSlippageAmount(parsedToken1Amount, allowedSlippage*100)[0],
   };
 
+  console.log("slippage, amountIn and output amountsMin", allowedSlippage, {amountAIn: parsedToken0Amount.toExact(), amountBIn: parsedToken1Amount.toExact()}, {amountAOutmin: amountsMin.CURRENCY_A.toString(), amountBOutmin: amountsMin.CURRENCY_B.toString() })
+
   console.log("------ PREPARING ARGS ------");
 
   let oneCurrencyIsETH = token0IsETH || token1IsETH;
@@ -276,8 +278,8 @@ export async function getEstimated(
     args = [
       token1IsETH ? inToken0Address : inToken1Address,
       liquidityAmount.raw.toString(),
-      amountsMin[token0IsETH ? 'CURRENCY_A' : 'CURRENCY_B'].toString(),
-      amountsMin[token1IsETH ? 'CURRENCY_B' : 'CURRENCY_A'].toString(),
+      amountsMin[token0IsETH ? 'CURRENCY_B' : 'CURRENCY_A'].toString(),
+      amountsMin[token1IsETH ? 'CURRENCY_A' : 'CURRENCY_B'].toString(),
       account,
       // deadlineTime, false, signature v, r, s will be added in SignOrApprove
     ];

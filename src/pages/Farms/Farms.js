@@ -111,8 +111,15 @@ const Farms = (props) => {
 
   const getPools = async (library, account, chainId) => {
     setIsLoadingPool(true);
-    const pools = await newGetAllPools(library, account, chainId);
     const block = await library.getBlockNumber();
+    var pools;
+    try {
+      pools = await newGetAllPools(library, account, chainId);
+    } catch(e) {
+      console.log("getPools error: ",account,chainId,library);
+      return;
+    }
+    // const pools = await newGetAllPools(library, account, chainId);
     const newFarmsContents = [];
     let ismyfarm = false;
     pools&&pools.forEach((pool,idx) => {
@@ -186,16 +193,16 @@ const Farms = (props) => {
       if(!account){
         connectWallet();
       }
+      setIsMyFarms(false);
       if (account) {
         setWalletConnected(true);
         console.log("start getPools",library,chainId);
         getPools(library, account, chainId);
-        
       } else {
         const provider = new JsonRpcProvider(RPC_URL(), chainId);
         const account = "0x0000000000000000000000000000000000000000";
         setWalletConnected(false);
-        getPools(provider, account, 56);
+        getPools(provider, account, chainId);
       }
     },
     [account, chainId]
@@ -322,7 +329,7 @@ const Farms = (props) => {
         </div>
         {selectedTable !== 4 && (
           <FarmsTable
-            tableRow={farmsContent}
+            tableRow={walletConnected?farmsContent:notLogginFarmContent}
             tableTitle={tableTitle}
             tableSubtitle={tableSubtitle}
             rowNumber={rowNumber}

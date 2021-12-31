@@ -1053,8 +1053,8 @@ export async function swap(
         })
       )
       .catch(e => {
-        //return new CustomError('Cannot estimate gas, maybe price impact is too large for the current slippage tolerance settings.');
-        return e;
+
+        return new CustomError('CustomError in transaction');
       });
     return result;
   })();

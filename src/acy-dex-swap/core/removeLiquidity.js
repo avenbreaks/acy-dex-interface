@@ -544,6 +544,9 @@ export async function signOrApprove(
         } else {
           alert('error code 4001!');
           console.log('error code 4001!');
+          setButtonContent('User rejected request');
+
+
           return new CustomError(
             ' 4001 (EIP-1193 user rejected request), fall back to manual approve'
           );
@@ -845,7 +848,8 @@ export async function removeLiquidity(
         return response;
       })
       .catch(e => {
-        return new CustomError('Failed to execute.');
+
+        return new CustomError('CustomError in transaction');
       });
 
     if (removeLiquidityResult instanceof CustomError) {
@@ -853,8 +857,12 @@ export async function removeLiquidity(
     }
     return removeLiquidityResult;
   })();
+
+
   if (status instanceof CustomError) {
     setRemoveStatus(status.getErrorText());
+    setButtonContent("Please try again");
+
   } else {
     console.log(status);
     

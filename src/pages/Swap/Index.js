@@ -14,6 +14,7 @@ import {
   AcyPriceChart,
   AcyConfirm,
   AcyApprove,
+  AcyReChart,
 } from '@/components/Acy';
 import Media from 'react-media';
 import AcyPieChart from '@/components/AcyPieChartAlpha';

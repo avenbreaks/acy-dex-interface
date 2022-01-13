@@ -29,6 +29,9 @@ const Pool = props => {
     history.push(`/launchpad/project/${projectID}`);
   };
 
+  const applyProject = ()=> {
+    history.push('/launchpad/project/applyProject')
+  }
   // wallet connect
   const { account, chainId, library, activate } = useWeb3React();
   const connectWalletByLocalStorage = useConnectWallet();
@@ -103,7 +106,10 @@ const Pool = props => {
         <p className={styles.titleDesc}>Launching Profitable Projects on Multichain.</p>
         <div className={styles.buttonContainer}>
           <div>
-            <BubblyButton href="https://forms.gle/gsLNsgDy2BXHNZda9" className={styles.btnApply} />
+            <BubblyButton className={styles.btnApply} 
+              onClick = {applyProject}
+              
+            />
           </div>
           <div>
             <RaiseButton

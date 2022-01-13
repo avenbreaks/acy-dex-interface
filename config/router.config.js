@@ -78,7 +78,7 @@ export default [
             component: './LaunchPad/LaunchpadProject',
           },
           {
-            path: 'launchpad/project/applyProject',
+            path: '/launchpad/applyProject',
             component: './LaunchPad/ApplicationForm',
           }
         ],

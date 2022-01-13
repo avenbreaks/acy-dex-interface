@@ -1,8 +1,10 @@
-
+import { useEffect } from "react"
 
 const ApplicationForm = ()=> {
 
-
+    useEffect(() => {
+        console.log("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
+    }, [])
 
 
     return(

@@ -10,63 +10,81 @@ const ApplicationForm = ()=> {
 
 
     return(
+        <div className="Form">
         <div className="container">
   <div className="row">
     <div className="col col-md-8 mr-md-auto ml-md-auto" >
       <div id="content">
             <header className= "headerStyle1">
-                    <h1 className="text-center">QUOTE YOUR INSURANCE</h1>
+                    <h1 className="text-center">ACY IDO APPLICATION FORM</h1>
             </header>
             <div className="row form-content">
                 <div className="col col-md-10 mr-md-auto ml-md-auto">
-                  <form action="" id="quoteForm">
-                              
-                                <div className="form-group">
-                                    <label for="brand">Name:</label>
-                                    <select className="form-control" id="brand">
-                                        <option value="">- Select -</option>
-                                        <option value="Ford">Ford</option>
-                                        <option value="Honda">Honda</option>
-                                        <option value="Audi">Audi</option>
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                <label for="model">Model:</label>
-                                <select className ="form-control" id="model">
-                                    <option value="">- Select -</option>
-                                    <option value="Hatchback">Hatchback</option>
-                                    <option value="Sedan">Sedan</option>  
-                                    <option value="Cabriolet">Cabriolet</option>
-                                    <option value="SUV">SUV</option>
-                                </select>
-                                </div>
-                                <div className="form-group">
-                                        <label for="year">Year:</label>
-                                        <select className="form-control" id="year">
-                                            <option value="">- Select -</option>  
-                                        </select>
-                                </div>
-                                <fieldset className="form-group">
-                                    <div className="row">
-                                         <legend className="col-form-legend col-12">Type of insurance</legend>
+                  <form action="" id="quoteForm" method="post">
+                   <ul>         
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Office Email Address:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Name-Person of Contact:</label>
+                                    <input type="text" id="ContactName" name="ContactName"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Project Name:</label>
+                                    <input type="text" id="ProjectName" name="ProjectName"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Project Website:</label>
+                                    <input type="text" id="ProjectWebsite" name="ProjectWebsite"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Token Symbol:</label>
+                                    <input type="text" id="TokenSymbol" name="TokenSymbol"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Token Contract Address(Chain Included):</label>
+                                    <input type="text" id="TokenAddr" name="TokenAddr"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Project Description:</label>
+                                    <textarea  id="ProjectDescription" name="ProjectDescription"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Vesting Rule:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Project Logo URL (SVG Preferred):</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">How much to raise?(USD):</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">How many tokens for sale:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Token Supply:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Fully Diluted Market Cup:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">IDO Date:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+                                <li className="form-group bmd-form-group">
+                                    <label for="brand" className=" bmd-label">Token Economics Link:</label>
+                                    <input type="text" id="Email" name="Email"/>
+                                </li>
+        
 
-                                      <div className="col12">
-                                          <div className="form-check">
-                                            <label className="form-check-label">
-                                              <input className="form-check-input" type="radio" name="type" value="basic" checked/>
-                                              Basic
-                                            </label>
-                                          </div>
-                                        <div className="form-check">
-                                            <label className="form-check-label">
-                                              <input className="form-check-input" type="radio" name="type" value="complete"/>
-                                              Complete
-                                            </label>
-                                        </div>
-                                      </div>
-                                    </div>
-                              </fieldset>
-
+                    </ul>  
                           <div id="loading">
                               <div className="spinner">
                                   <div className="bounce1"></div>
@@ -76,7 +94,7 @@ const ApplicationForm = ()=> {
                           </div>
                           <div id="result"></div>
                           <div className="form-group">
-                                  <button type="submit" className="btn btn-raised btn-primary">Generate 
+                                  <button type="submit" className="btn btn-raised btn-primary">APPLY 
                                   </button>
                           </div>
                   </form> 
@@ -85,6 +103,7 @@ const ApplicationForm = ()=> {
       </div> 
     </div>
   </div>
+</div>
 </div>
     )
 }

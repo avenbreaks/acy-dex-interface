@@ -1,4 +1,30 @@
+.Form{
+    margin: 0;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+    background-color: #fafafa;
+    font-weight: 400;
+    background: #E6DADA;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #274046, #E6DADA);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #274046, #E6DADA); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+}
 
+.bmd-label{
+    top: 1rem;
+    left: 0;
+    font-size: .75rem;
+    position: absolute;
+    pointer-events: none;
+    transition: all .3s ease;
+    line-height: 1;
+    color: rgb(0, 0, 0);
+    display: inline-block;
+    margin-bottom: .5rem;
+}
 .container{
     width: 100%;
     padding-right: 15px;
@@ -6,6 +32,21 @@
     margin-right: auto;
     margin-left: auto;
 }
+
+#quoteForm{
+    margin-bottom: 1.125rem;
+
+}
+
+.bmd-form-group {
+    position: relative;
+    padding-top: 1.75rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
 
 @media (min-width: 1200px){
 .container {
@@ -24,7 +65,7 @@
 }}
 @media (min-width: 576px)
 {.container {
-    max-width: 540px;
+    max-width: 1000px;
 }
 }
 
@@ -43,6 +84,19 @@
     max-width: 66.66667%;
 }}
 
+@media (min-width: 768px)
+{.col-md-10 {
+    flex: 0 0 83.33333%;
+    max-width: 83.33333%;
+}
+}
+.col{
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
 .row{
     display: flex;
     flex-wrap: wrap;
@@ -56,17 +110,35 @@
     font-size: 16px;
     width: 100%;
     padding: 15px;
+    position: relative;
+    margin-bottom: .3125rem;
+    font-size: .875rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    cursor: pointer;
+    border: 0;
+    outline: 0;
+    transition: box-shadow .2s cubic-bezier(.4,0,1,1),background-color .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1);
+    will-change: box-shadow,transform;
+    color: rgba(0,0,0,.87);
+    background-color: transparent;
+    border-color: #ccc;
+    
 }
 .headerStyle1 {
-    background-color:rgb(33, 197, 134);
+    background-color:#1b1b1C;
     padding: 10px;
     text-transform: uppercase;
     font-weight: bold;
     color: white;
 }
-.headerStyle1.h1 {
+
+.text-center {
+    text-align: center!important;
     font-size: 22px;
     margin:0;
+    color: white;
 }
 .error {
     background-color: #FBE9E7;
@@ -164,3 +236,32 @@
       transform: scale(1.0);
     }
   }
+
+
+  input,
+textarea {
+  /* To make sure that all text fields have the same font settings
+     By default, textareas have a monospace font */
+  font: 1em sans-serif;
+
+  /* Uniform text field size */
+  width: 300px;
+  box-sizing: border-box;
+
+  /* Match form field borders */
+  border: 1px solid #999;
+}
+
+input:focus,
+textarea:focus {
+  /* Additional highlight for focused elements */
+  border-color: #000;
+}
+
+textarea {
+  /* Align multiline text fields with their labels */
+  vertical-align: top;
+
+  /* Provide space to type some text */
+  height: 5em;
+}

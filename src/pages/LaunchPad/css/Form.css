@@ -47,6 +47,9 @@
     margin-bottom: 1rem;
 }
 
+.form-control{
+    color: #000;
+}
 
 @media (min-width: 1200px){
 .container {

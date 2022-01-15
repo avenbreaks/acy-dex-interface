@@ -18,7 +18,13 @@ const ApplicationForm = ()=> {
     <div className="col col-md-8 mr-md-auto ml-md-auto" >
       <div id="content">
             <header className= "headerStyle1">
-                    <h1 className="text-center">ACY IDO APPLICATION FORM</h1>
+                    <h1 className="text-center">ACY- Token Sale Application Form</h1>
+                    <p className = "ptext">Welcome! Please fill the form in order to launch your token sales on the ACY platform!<br/>
+<div className = "ptext2">                    
+Good luck!<br/>
+ACY Finance Team
+</div>   
+</p>
             </header>
             <div className="row form-content">
                 <div className="col col-md-10 mr-md-auto ml-md-auto">

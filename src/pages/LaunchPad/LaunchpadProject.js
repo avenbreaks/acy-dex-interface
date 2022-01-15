@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-indent */
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Progress, Button, Table, Input, Tooltip, Icon, Alert } from 'antd';
 import { history } from 'umi';
 import styles from "./styles.less"
 import LaunchChart from './launchChart';
 import { getTransferData } from '@/acy-dex-swap/core/launchPad';
-import { requireAllocation, getAllocationInfo, getProjectInfo } from '@/services/api';
+import { requireAllocation, getAllocationInfo, getProjectInfo, useAllocation } from '@/services/api';
 import { BigNumber } from '@ethersproject/bignumber';
 import ERC20ABI from '@/abis/ERC20.json';
 import { binance, injected } from '@/connectors';
@@ -42,7 +42,9 @@ import { getContract } from "../../acy-dex-swap/utils/index.js"
 import { useWeb3React } from '@web3-react/core';
 import {useConnectWallet} from "@/components/ConnectWallet";
 import POOLABI from "@/acy-dex-swap/abis/AcyV1Poolz.json";
-import { LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST } from "@/constants";
+
+import { useConstantLoader, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST } from "@/constants";
+
 import { CustomError } from "@/acy-dex-swap/utils"
 import { approveNew, getAllowance } from "@/acy-dex-swap/utils"
 
@@ -64,9 +66,7 @@ const LaunchpadProject = () => {
   const [poolMainCoinLogoURL, setPoolMainCoinLogoURL] = useState(null);
   const [poolMainCoinName, setPoolMainCoinName] = useState(null);
   const [isError, setIsError] = useState(false);
-  const [isClickedAllocation, setIsClickedAllocation] = useState(false);
-  const [isAllocated, setIsAllocated] = useState(false);
-  const [allocationAmount, setAllocationAmount] = useState(0);
+  const [allocationInfo, setAllocationInfo] = useState({});
   const [hasCollected, setHasCollected] = useState(false);
   const [successCollect, setSuccessCollect] = useState(false);
   const [notVesting, setNotVesting] = useState(false);
@@ -77,22 +77,9 @@ const LaunchpadProject = () => {
   const [comparevestDate, setComparevestDate] = useState(false);
   const [isClickedVesting, setIsClickedVesting] = useState(false);
   const [isClickedMax, setIsClickedMax] = useState(false);
-  const [salesValue, setSalesValue] = useState(0);
-  const [isValidSalesPrice, setIsValidSalesPrice] = useState(true);
-  
   // const [investorNum,setinvestorNum] = useState(0);
-  
   // const [isInvesting, setIsInvesting] = useState(false);
-  
 
-  // NOTE (Gary 2022.1.4): change poolId
-  let PoolId
-  if(poolID) {
-     PoolId = poolID
-  } else {
-    PoolId = 16
-  }
-  
   // CONSTANTS
   const InputGroup = Input.Group;
   const logoObj = {
@@ -120,7 +107,7 @@ const LaunchpadProject = () => {
   };
 
   const clickToWebsite = () => {
-    const newWindow = window.open(receivedData.website, '_blank', 'noopener,noreferrer');
+    const newWindow = window.open(receivedData.social[0].Website, '_blank', 'noopener,noreferrer');
     if (newWindow) newWindow.opener = null;
   }
 
@@ -136,55 +123,6 @@ const LaunchpadProject = () => {
     return res
   }
 
-  // HOOKS
-  useEffect(() => {
-    console.log("checkUrl",API_URL)
-    getProjectInfo(API_URL(), projectId)
-      .then(res => {
-        if (res) {
-          // extract data from string
-          console.log("fecthing project info ------------111",res.contextData)
-          const contextData = JSON.parse(res.contextData);
-
-          res['tokenLabels'] = contextData['tokenLabels'];
-          res['projectDescription'] = contextData['projectDescription'];
-          res['alreadySale'] = contextData['alreadySale'];
-          res['salePercentage'] = contextData['salePercentage'];
-          res['posterUrl'] = contextData['posterUrl'];
-          res['tokenLogoUrl'] = res.basicInfo.projectTokenUrl;
-
-          res['regStart'] = formatTime(res.scheduleInfo.regStart);
-          res['regEnd'] = formatTime(res.scheduleInfo.regEnd);
-          res['saleStart'] = formatTime(res.scheduleInfo.saleStart);
-          res['saleEnd'] = formatTime(res.scheduleInfo.saleEnd);
-
-          res['totalSale'] = res.saleInfo.totalSale;
-          res['totalRaise'] = res.saleInfo.totalRaise;
-          res['projectUrl'] = res.saleInfo.projectUrl;
-          res['projectName'] = res.basicInfo.projectName;
-          res['projectToken'] = res.basicInfo.projectToken;
-          res['mainCoin'] = res.basicInfo.mainCoin
-          
-
-          // get state to hide graph and table
-          const curT = new Date()
-          if (curT < res.scheduleInfo.saleStart) setCompareAlloDate(true)
-          const mainCoinInfo = TOKEN_LIST().find(item => item.symbol == res.basicInfo.mainCoin)
-          setMainCoinLogoURI(mainCoinInfo.logoURI)
-          setPoolID(res.basicInfo.poolID);
-          setReceivedData(res);
-        } else {
-          console.log('redirect to list page');
-          history.push('/launchpad');
-        }
-      })
-      .catch(e => {
-        console.log("Project Detail check errrrrrrrrrrr",e);
-        // console.error(e);
-        // history.push('/launchpad');
-      });
-  }, []);
-
   // contract function
   const getPoolData = async (lib, acc) => {
     const poolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, lib, acc);
@@ -193,10 +131,9 @@ const LaunchpadProject = () => {
     const distributionStage = []
 
     // 合约函数调用
-    console.log("pool id: ", PoolId)
-    const baseData = await poolContract.GetPoolBaseData(PoolId)
-    const distributionData = await poolContract.GetPoolDistributionData(PoolId)
-    const status = await poolContract.GetPoolStatus(PoolId)
+    const baseData = await poolContract.GetPoolBaseData(poolID)
+    const distributionData = await poolContract.GetPoolDistributionData(poolID)
+    const status = await poolContract.GetPoolStatus(poolID)
 
     // getpoolbasedata 数据解析
     const token2Address = baseData[1]
@@ -244,73 +181,98 @@ const LaunchpadProject = () => {
     console.log(token2Address)
   }
 
+  // HOOKS
+  // Retrieve project data from db
+  useEffect(() => {
+    getProjectInfo(API_URL(), projectId)
+      .then(res => {
+        if (res) {
+          // extract data from string
+          console.log("fecthing project info ------------111",res.contextData)
+          const contextData = JSON.parse(res.contextData);
+
+          res['tokenLabels'] = contextData['tokenLabels'];
+          res['projectDescription'] = contextData['projectDescription'];
+          res['alreadySale'] = contextData['alreadySale'];
+          res['salePercentage'] = contextData['salePercentage'];
+          res['posterUrl'] = contextData['posterUrl'];
+          res['tokenLogoUrl'] = res.basicInfo.projectTokenUrl;
+
+          res['regStart'] = formatTime(res.scheduleInfo.regStart);
+          res['regEnd'] = formatTime(res.scheduleInfo.regEnd);
+          res['saleStart'] = formatTime(res.scheduleInfo.saleStart);
+          res['saleEnd'] = formatTime(res.scheduleInfo.saleEnd);
+
+          res['tokenPrice'] = res.saleInfo.tokenPrice
+          res['totalSale'] = res.saleInfo.totalSale;
+          res['totalRaise'] = res.saleInfo.totalRaise;
+          res['projectUrl'] = res.saleInfo.projectUrl;
+          res['projectName'] = res.basicInfo.projectName;
+          res['projectToken'] = res.basicInfo.projectToken;
+          res['mainCoin'] = res.basicInfo.mainCoin
+          
+          
+
+          // get state to hide graph and table
+          const curT = new Date()
+          if (curT < res.scheduleInfo.saleStart) setCompareAlloDate(true)
+          const mainCoinInfo = TOKEN_LIST().find(item => item.symbol == res.basicInfo.mainCoin)
+          setMainCoinLogoURI(mainCoinInfo.logoURI);
+          setPoolID(res.basicInfo.poolID);
+          setReceivedData(res);
+        } else {
+          console.log('redirect to list page');
+          history.push('/launchpad');
+        }
+      })
+      .catch(e => {
+        console.log("Project Detail check errrrrrrrrrrr",e);
+        // console.error(e);
+        history.push('/launchpad');
+      });
+  }, [library, account]);
+
   // fetching data from Smart Contract
   useEffect(async () => {
     if (!account) {
       connectWallet();
     }
-    else if (account && library) {
-      console.log("start getPoolBaseData")
-      await getPoolData(library, account)
-      console.log("poolDistributionDate", poolDistributionDate, poolDistributionStage)
+
+    // project must have poolID
+    if (!poolID) return;
+
+    if (account && library) {
+      getPoolData(library, account)
     } else {
       const provider = new JsonRpcProvider(LAUNCH_RPC_URL(), CHAINID());  // different RPC for mainnet
       const accnt = "0x0000000000000000000000000000000000000000";
-      await getPoolData(provider, accnt)
-      console.log("poolDistributionDate", poolDistributionDate, poolDistributionStage)
+      // await getPoolData(provider, accnt)
     } 
-  }, [library, account])
+  }, [library, account, poolID])
 
+  // fetching allocation data
   useEffect(async () => {
-    if (!account) {
-      connectWallet();
-    }
-    else if (account && library){
-      console.log("start getPoolBaseData")
-      await getPoolData(library, account)
-    } else {
-      const provider = new JsonRpcProvider(LAUNCH_RPC_URL(), CHAINID());  // different RPC for mainnet
-      const accnt = "0x0000000000000000000000000000000000000000";
-      await getPoolData(provider, accnt)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!account || !receivedData.projectToken) {
-      return
-    }
-    // get allocation status from backend at begining
     console.log("line 145", account, receivedData.projectToken);
+    if (!account) {
+      connectWallet()
+      return;
+    }
+  
+    // get allocation status from backend at begining
     getAllocationInfo(API_URL(), account, receivedData.projectToken)
       .then(res => {
-        console.log("res, res.allocationAmount", res, res.allocationAmount)
-        if (res && res.allocationAmount) {
-          // setAllocationAmount(res.allocationAmount);
-          console.log('allocation amount', res.allocationAmount);
+        if (res) {
+          setAllocationInfo(res);
+          console.log('allocation info', res);
         }
       })
       .catch(e => {
-        console.error(e);
+        console.log('Error: ', e);
+        throw e;
       });
-    
-    const oldAllocationAmount = allocationAmount;
-    if (oldAllocationAmount === 0) {
-        requireAllocation(API_URL(), account, receivedData.projectToken).then(res => {
-          console.log("api url", API_URL())
-          if(res && res.allocationAmount) {
-            setAllocationAmount(res.allocationAmount);
-            setIsAllocated(true);
-            // setCoverOpenState(true);
-          }
-          console.log('allocation get', res.allocationAmount);
-        }).catch(e => {
-          console.error(e);
-        })
-    }
-  }, []);
+  }, [account, library]);
 
   // COMPONENTS
-  // change to URL
   const TokenBanner = ({ posterUrl }) => {
     return (
       <img
@@ -366,8 +328,6 @@ const LaunchpadProject = () => {
             <div className="procedureNumber">1</div>
             <div>
               <p>Allocation</p>
-              {/* <p className="shortText">Start : {receivedData.regStart}</p>
-              <p className="shortText">End : {receivedData.regEnd}</p> */}
             </div>
           </div>
 
@@ -407,7 +367,7 @@ const LaunchpadProject = () => {
     };
 
     const ProgressBar = ({ alreadySale, totalSale, projectToken }) => {
-      const salePercentage = Number(alreadySale) / Number(totalSale)
+      const salePercentage = (100 * Number(alreadySale) / Number(totalSale)).toFixed(4)
       let tokenNum
       console.log("--------ALREADY SALE----------")
       console.log(alreadySale)
@@ -480,14 +440,14 @@ const LaunchpadProject = () => {
         <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
           <div className="keyinfoName">Total Raise</div>
           <div>
-            {receivedData.totalRaise} {poolMainCoinName}
+            {receivedData.totalRaise} {receivedData.basicInfo.mainCoin}
           </div>
         </div>
 
         <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
           <div className="keyinfoName">Rate</div>
           <div>
-            1 {projectToken} = {tokenPrice} {poolMainCoinName}
+            1 {projectToken} = {tokenPrice} {receivedData.mainCoin}
           </div>
         </div>
       </div>
@@ -613,146 +573,134 @@ const LaunchpadProject = () => {
     );
   };
 
-  const AllocationCard = ({
-    id,
-    index,
-    Component,
-    allocationAmount,
-    setAllocationAmount,
-    walletId,
-    projectToken,
-    isClickedAllocation,
-    setIsClickedAllocation,
-    isAllocated,
-    colorCode,
-    baseColorCode,
-  }) => {
-    const [coverOpenState, setCoverOpenState] = useState(false);
-    const [coverRevealState, setCoverRevealState] = useState(false);
-    const computeCoverClass = () => {
-      let classString = 'cover';
-      if (coverOpenState) {
-        classString += ' openCover';
-      }
-      return classString;
-    };
+  const Allocation = () => {
 
-    // if allocation is done, cover cannot be opened
-    // otherwise, require an allocation from server
-    const clickCover = async e => {
-      console.log(`click allocation card cover`, allocationAmount);
-      console.log(isClickedAllocation);
-      // requireAllocation(API_URL(), account, projectToken)
-      if (!walletId || !receivedData.projectToken) {
-        return;
-      }
-      if (!isAllocated) {
-        console.log("Allocation amount is not ready!");
-        requireAllocation(API_URL(), account, receivedData.projectToken).then(res => {
-          if(res && res.allocationAmount) {
-            setAllocationAmount(res.allocationAmount);
-            setIsAllocated(true);
-            setSalesValue(res.allocationAmount);
-          }
-          console.log('allocation get', res.allocationAmount);
-        }).catch(e => {
-          console.error(e);
-        })
-        return;
-      }
-      if (isClickedAllocation) {
-        return;
-      }
-      setCoverOpenState(true);
-      setIsClickedAllocation(true);
-      let cards = document.querySelectorAll(".cover");
-      cards.forEach(node => {
-        node.classList.remove("inner-text")
-        node.classList.remove("cover");
-        let innerText = node.parentElement.querySelector(".inner-text-amount");
-        const offsets = [0.1, 0.5, 0.75, 1, 1.5, 2, 3, 5];
-        const offsetPercentage = offsets[Math.floor((Math.random() * offsets.length))]
+    const colorCodes = ["#C6224E", "#1E5D91", "#E29227", "#1C9965", "#70BA33"];
+    const baseColorCodes = ["#631027", "#0f2e48", "#74490f", "#0e4c32", "#375d19"];
+    const [innerValues, setInnerValues] = useState(new Array(5).fill(0));
+    const [coverOpenStates, setCoverOpenStates] = useState(new Array(5).fill(false));
+    const [salesValue, setSalesValue] = useState(0);
+    const [cardIndexClicked, setCardIndexClicked] = useState(null);
 
-        // get 4 random values for other allocation values
-        innerText.textContent = `${Math.floor(allocationAmount * offsetPercentage)}`;
-        innerText.style.color = "#757579";
-      })
-      try {
-        let originalElementParent = e.target.parentElement.querySelector(".inner-text-amount");
-        originalElementParent.textContent = `${allocationAmount}`;
-        originalElementParent.style.color = "#ffffff"
-      } catch (err) {
-        // set all values to $0 due to error
-        // innerText.textContent = "$0";
-        console.log(err);
-      }
-      // originalElementParent.textContent = allocationAmount;
+    const AllocationCard = ({index, coverOpenState}) => {  
 
-      
-      setCoverOpenState(true);
-      e.preventDefault();
-    };
+      const computeCoverClass = () => {
+        let classString = 'cover';
+        if (coverOpenState) {
+          classString += ' openCover';
+        }
+        return classString;
+      };
 
-    return (
-      <div className='allocationCard-container'>
-        <div className="allocationCard" onClick={clickCover} style={{backgroundColor: baseColorCode}}>
-          <div className={computeCoverClass()} style={{backgroundColor: colorCode}}>
-            {/* <div className="allocationCard-inner">
-              <p className="inner-text">{index + 1}</p>
-            </div> */}
-          </div>
-          <p className="inner-text-amount"></p> 
-        </div>
-      </div>
-    );
-  };
+      // if allocation is done, cover cannot be opened
+      // otherwise, require an allocation from server
+      const clickCover = (e) => {
+        if (cardIndexClicked) return;
+        setCardIndexClicked(index);
 
-  const Allocation = ({ walletId, projectToken, allocationAmount, setAllocationAmount, isAllocated, setIsAllocated, tokenLogoUrl}) => {
-    // TODO: replace with 24 icon
-    const BaseCard = ({ url }) => {
+        console.log(`click allocation card cover`, allocationInfo);      
+        if (!account || !receivedData.projectToken) {
+          connectWallet();
+          return;
+        }
+
+        // first time allocation
+        if (!allocationInfo.allocationAmount) {
+          requireAllocation(API_URL(), account, receivedData.projectToken).then(res => {
+            if (res) {
+              console.log('resalloc: ', res);
+              setAllocationInfo(res);
+              updateInnerValues(index);
+              updateCoverStates(index);
+            }
+          }).catch(e => {
+            console.error(e);
+          })
+        } else {
+          console.log('updating');
+          updateInnerValues(index);
+          updateCoverStates(index);
+        }
+      };
+  
       return (
-        <div style={{ background: 'white', height: '80px', width: '80px', borderRadius: '4px' }}>
-          {/* <AllocationIcon play={true} url={url} id="apple"/> */}
+        <div className='allocationCard-container'>
+          <div className="allocationCard" onClick={clickCover} style={{backgroundColor: baseColorCodes[index]}}>
+            <div 
+              className={computeCoverClass()} 
+              style={{backgroundColor: colorCodes[index]}}
+            >
+            </div>
+            <p className="inner-text-amount">{innerValues[index]}</p> 
+          </div>
         </div>
       );
     };
 
     const allocationCards = () => {
       const cards = [];
-      const colorCodes = ["#C6224E", "#1E5D91", "#E29227", "#1C9965", "#70BA33"];
-      const baseColorCodes = ["#631027", "#74490f", "#0f2e48", "#0e4c32", "#375d19"]
       for (let i = 0; i < 5; i++) {
         cards.push(
           <AllocationCard
-            id={i}
             index={i}
-            Component={BaseCard}
-            allocationAmount={allocationAmount}
-            setAllocationAmount={setAllocationAmount}
-            walletId={walletId}
-            projectToken={project}
-            isClickedAllocation={isClickedAllocation}
-            setIsClickedAllocation={setIsClickedAllocation}
-            isAllocated={isAllocated}
-            colorCode={colorCodes[i]}
-            baseColorCode={baseColorCodes[i]}
+            innerValue={innerValues[i]}
+            coverOpenState={coverOpenStates[i]}
           />
         );
       }
       return cards;
     };
 
-    useEffect(() => {
-      if (salesValue > allocationAmount) {
-        setIsValidSalesPrice(false);
+    const onChangeSaleValue = (e) => {
+      const value = e.target.value;
+      
+      if (!allocationInfo) setSalesValue(0);
+      const allocationLeft = allocationInfo.allocationLeft;
+      if (value > allocationLeft) {
+        setSalesValue(allocationLeft);
+      } else if (value < 0) {
+        setSalesValue(0);
       } else {
-        setIsValidSalesPrice(true);
+        setSalesValue(value);
       }
-    }, [salesValue])
+    }
+
+    const onClickBuy = () => {
+      console.log("buy"); 
+      console.log("sales value", salesValue); 
+      investClicked(LAUNCHPAD_ADDRESS(), poolID, salesValue);
+    }
 
     const maxClick = () => {
-      setSalesValue(allocationAmount)
-      setIsClickedMax(true)
+      setSalesValue(allocationInfo.allocationLeft);
+    }
+
+    const randomRange = (min, max) => Math.floor(Math.random() * (max - min) + min);
+
+    const updateInnerValues = (index) => {      
+      const newInnerValues = innerValues;
+      const allocationAmount = allocationInfo.allocationAmount;
+      for(let i = 0; i < innerValues.length; i++) {
+        if (i === index) {
+          newInnerValues[i] = allocationAmount;
+        } else {
+          newInnerValues[i] = randomRange(allocationAmount * 0.1, allocationAmount * 3);
+        }
+      }
+      console.log('newInnerValues', newInnerValues);
+      setInnerValues(newInnerValues);
+    }
+
+    const updateCoverStates = (index) => {
+      const newCoverOpenStates = coverOpenStates;
+      console.log('CoverOpenStates', coverOpenStates);
+      newCoverOpenStates[index] = true;
+      console.log('newCoverOpenStates', newCoverOpenStates);
+      setCoverOpenStates(newCoverOpenStates);
+      
+      setTimeout(() => {
+        setCoverOpenStates(new Array(5).fill(true));
+      }, 3000);
     }
 
     const tooltipTitle = () => {
@@ -761,38 +709,18 @@ const LaunchpadProject = () => {
           <span>Increase Your Allocation Amount:</span>
           <br />
           <span className='tool-tip-content'>
-            1.Increase your trading volume @ <a href="/#/exchange" target="_blank">Exchange</a>
+            1.Increase your trading volume @ <Link to="/#/exchange" target="_blank">Exchange</Link>
           </span>
           <br />
           <span className='tool-tip-content'>
-            2.Increase your liquidity @ <a href="/#/liquidity" target="_blank">Liquidity</a>
+            2.Increase your liquidity @ <Link to="/#/liquidity" target="_blank">Liquidity</Link>
           </span>
           <br />
           <span className='tool-tip-content'>
-            3.Buy and hold more $ACY @ <a href="/#/exchange" target="_blank">Exchange</a>
+            3.Buy and hold more $ACY @ <Link to="/#/exchange" target="_blank">Exchange</Link>
           </span>
         </div>
     )}
-
-    useEffect(() => {
-      let timeout
-      if (isError) {
-        timeout = setTimeout(() => setIsError(false), 1000);
-      }
-      if (hasCollected){
-        timeout = setTimeout(() => setHasCollected(false), 1000);
-      }
-      if (notVesting){
-        timeout = setTimeout(() => setNotVesting(false), 1000);
-      }
-      if (successCollect){
-        timeout = setTimeout(() => setSuccessCollect(false), 1000);
-      }
-      if (isNotInvesting){
-        timeout = setTimeout(() => setNotVesting(false), 1000);
-      }
-      return () => clearTimeout(timeout);
-    }, [isError, hasCollected]);
 
     const vestingClaimClicked = async () => {
       if(poolStatus !== 4){
@@ -803,7 +731,7 @@ const LaunchpadProject = () => {
           connectWallet()
         }
         // Check if users have collected token for current vesting stage
-        const investorData = await PoolContract.GetInvestmentData(PoolId, account)
+        const investorData = await PoolContract.GetInvestmentData(poolID, account)
         const investorRes = []
         if(investorData){
           investorData.map(data => investorRes.push(Number(BigNumber.from(data).toBigInt().toString())))
@@ -824,7 +752,7 @@ const LaunchpadProject = () => {
           setHasCollected(true)
         } else {
           const status = await (async () => {
-            const result = await PoolContract.WithdrawERC20ToInvestor(PoolId)
+            const result = await PoolContract.WithdrawERC20ToInvestor(poolID)
               .catch(e => {
                 console.log(e)
                 return new CustomError('CustomError while withdrawing token');
@@ -850,28 +778,59 @@ const LaunchpadProject = () => {
           // NOTE (gary 2022.1.6): use toString method
           const approveAmount = (amount * Math.pow(10, poolMainCoinDecimals)).toString()
           const state = await approveNew(poolMainCoinAddress, approveAmount, poolAddress, library, account);
-          const result = await PoolContract.InvestERC20(poolId , approveAmount)
+          const result = await PoolContract.InvestERC20(poolId, approveAmount)
             .catch(e => {
               console.log(e)
               return new CustomError('CustomError while buying token');
             });
           return result;
         })();
+
+        useAllocation(API_URL(), account, receivedData.projectToken, amount)
+          .then(res => {
+            if (res) {
+              console.log('use alloc', res);
+              setAllocationInfo(res);
+            }
+          })
+          .catch(e => console.log(e));
         console.log("buy contract", status)
       }
     }
 
-    // TO-DO: TOKEN PURCHASE === ALLOCATIONAMOUNT ? SETISVETING(TRUE)
+    const calcAllocBonus = (allocationBonus) => {
+      let totalBonus = 0;
+      if(allocationBonus) {
+        for(let i = 0; i < allocationBonus.length; i++) {
+          totalBonus += allocationBonus[i].bonusAmount;
+        }
+      }
+      return totalBonus;
+    }
+
+    useEffect(() => {
+      let timeout;
+      if (isError) {
+        timeout = setTimeout(() => setIsError(false), 1000);
+      }
+      if (hasCollected){
+        timeout = setTimeout(() => setHasCollected(false), 1000);
+      }
+      if (notVesting){
+        timeout = setTimeout(() => setNotVesting(false), 1000);
+      }
+      if (successCollect){
+        timeout = setTimeout(() => setSuccessCollect(false), 1000);
+      }
+      if (isNotInvesting){
+        timeout = setTimeout(() => setNotVesting(false), 1000);
+      }
+      return () => clearTimeout(timeout);
+    }, [isError, hasCollected]);
+
     return (
       <div>
-      { !isVesting ? 
-        <div
-          className={
-            isClickedVesting
-              ? 'cardContent allocation-content allocation-content-active'
-              : 'cardContent allocation-content allocation-content-inactive'
-          }
-        >
+        <div className='cardContent allocation-content allocation-content-active'>
           <div className="allocation-title-container">
             <div className='title-tooltip-container'>
                 <p className="allocation-title">Allocation</p>
@@ -886,27 +845,40 @@ const LaunchpadProject = () => {
             <div className="allocation-container-dummy"></div>
           </div>
 
+          { allocationInfo && allocationInfo.allocationAmount &&
+            <div className="allocation-info-container">
+              <div>Allocation Amount: <span>{allocationInfo.allocationAmount}</span></div>
+              <div>Allocation Bonus: <span>{calcAllocBonus(allocationInfo.allocationBonus)}</span></div>
+              <div>Allocation Used: <span>{allocationInfo.allocationUsed}</span></div>
+              <div>Allocation Left: <span>{allocationInfo.allocationLeft}</span></div>
+            </div>
+          }
+
           <form className="sales-container">
             <label for="sale-number" className="sale-vesting-title">
               Sale
             </label>
             <div className="sales-input-container">
               <InputGroup>
-                <Input className="sales-input" defaultValue="0" value={salesValue} onChange={e => setSalesValue(e.target.value)} />
+                <Input 
+                  className="sales-input"
+                  value={salesValue} 
+                  onChange={onChangeSaleValue}
+                />
                 <div className="unit-max-group">
                   <div className="token-logo">
                     <img src={mainCoinLogoURI} alt="token-logo" className="token-image" />
                   </div>
-                  { isClickedMax ? <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginLeft:'2rem', fontWeight:'700'}}>{poolMainCoinName}</div> : <Button className="max-btn" onClick={maxClick}>MAX</Button> }
+                  { isClickedMax ? <div style={{display:'flex', justifyContent:'center', alignItems:'center', marginLeft:'2rem', fontWeight:'700'}}>{receivedData.basicInfo.mainCoin}</div> : <Button className="max-btn" onClick={maxClick}>MAX</Button> }
                 </div>
               </InputGroup>
             </div>
             <Button 
-              className={isValidSalesPrice ? "sales-submit" : "sales-submit invalid"} 
-              disabled={comparevestDate}
-              onClick={() => {console.log("buy"); console.log("sales value", salesValue); investClicked(LAUNCHPAD_ADDRESS(), PoolId, salesValue); }}
-            > 
-              Buy 
+              className="sales-submit"
+              disabled={poolBaseData?(poolBaseData[2] >= new Date() || poolBaseData[3] <= new Date()) : false}
+              onClick={onClickBuy}
+            >
+              Buy
             </Button>
           </form>
 
@@ -938,26 +910,12 @@ const LaunchpadProject = () => {
             </div>
           }
         </div>
-      :
-        <div>
-          { poolDistributionStage && poolDistributionDate &&
-            <div className="vesting-container">
-              <p className="sale-vesting-title vesting">Vesting</p>
-              <div className="text-line-container-open">
-                <p>Vesting is divided into {poolStageCount} stages, unlock {poolDistributionStage[0]}% TGE</p>
-                <span className="vesting-line" />
-                <VestingSchedule vestingDate={poolDistributionDate} stageData={poolDistributionStage} vestingClick={vestingClaimClicked} />
-              </div>
-            </div>
-          }
-        </div>
-      }
+
       </div>
     );
   };
 
-  const CardArea = ({ walletId,  allocationAmount, setAllocationAmount, isAllocated, setIsAllocated, tokenLogoUrl }) => {
-    // const { account: walletId } = useWeb3React();
+  const CardArea = () => {
     return (
       <div className="gridContainer">
         <div className="leftGrid">
@@ -973,18 +931,11 @@ const LaunchpadProject = () => {
         </div>
         <div className="rightGrid">
           <div className="circleBorderCard">
-            <Allocation 
-              walletId={walletId}
-              projectToken={receivedData.projectToken}
-              allocationAmount={allocationAmount}
-              setAllocationAmount={setAllocationAmount}
-              isAllocated={isAllocated}
-              setIsAllocated={setIsAllocated}
-              tokenLogoUrl={tokenLogoUrl}
-            />
+            <Allocation />
           </div>
           <ProjectDescription />
-          { !comparesaleDate || compareAlloDate ? "" : <ChartCard className="launchpad-chart" /> }
+          {/* { !comparesaleDate || compareAlloDate ? "" : <ChartCard className="launchpad-chart" /> } */}
+          <ChartCard className="launchpad-chart" />
         </div>
       </div>
     );
@@ -993,22 +944,15 @@ const LaunchpadProject = () => {
   return (
     <div>
       <div className="mainContainer">
-        {isError ? <Alert message="Wallet is not connected." type="error" showIcon /> : ""}
-        {isNotInvesting ? <Alert message="Wait until Sale stage to purchase." type="info" showIcon /> : ""}
-        {hasCollected ? <Alert message="You have vested token for current vesting stage." type="info" showIcon /> : ""}
+        {isError && <Alert message="Wallet is not connected." type="error" showIcon />}
+        {isNotInvesting && <Alert message="Wait until Sale stage to purchase." type="info" showIcon />}
+        {hasCollected && <Alert message="You have vested token for current vesting stage." type="info" showIcon />}
         <TokenBanner posterUrl={receivedData.posterUrl} />
         <TokenLogoLabel
           projectName={receivedData.projectName}
           tokenLogo={receivedData.tokenLogoUrl}
         />
-        <CardArea
-          walletId={account}
-          allocationAmount={allocationAmount}
-          setAllocationAmount={setAllocationAmount}
-          isAllocated={isAllocated}
-          setIsAllocated={setIsAllocated}
-          tokenLogoUrl={poolMainCoinLogoURL}
-        />
+        <CardArea />
       </div>
     </div>
   );

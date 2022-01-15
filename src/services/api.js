@@ -129,7 +129,7 @@ export async function getFakeCaptcha(mobile) {
 
 // TODO: move this part to constants
 // const urlPrefix = 'https://api.acy.finance/bsc-main';
-const urlPrefix = 'http://localhost:3001/bsc-test';
+const urlPrefix = 'http://localhost:3001/bsc-main/api';
 
 export async function requireAllocation(network, walletId, projectToken) {
   return r.get(`${API_URL()}/launch/allocation/require`, {
@@ -149,6 +149,16 @@ export async function getAllocationInfo(network, walletId, projectToken) {
   })
 }
 
+export async function useAllocation(network, walletId, projectToken, amount) {
+  return r.get(`${API_URL()}/launch/allocation/use`, {
+    params: {
+      walletId: walletId,
+      projectToken: projectToken,
+      amount: amount
+    }
+  })
+}
+
 export async function getProjects(network) {
   return r.get(`${API_URL()}/launch/projects`)
 }
@@ -157,4 +167,3 @@ export async function getProjectInfo(network, projectId) {
   return r.get(`${API_URL()}/launch/projects/${projectId}`)
 }
 
-// export async function 

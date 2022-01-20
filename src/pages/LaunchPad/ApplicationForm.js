@@ -101,7 +101,7 @@ const ApplicationForm = ()=> {
   </fieldset>
   <fieldset id="fieldset2">
     <h2 class="fs-title">Token Description</h2>
-    <h3 class="fs-subtitle">Your presence on the social network</h3>
+    {/* <h3 class="fs-subtitle">Your presence on the social network</h3> */}
     <input type="text" name="Symbol" placeholder="2.1 Token Symbol" />
     <input type="text" name="Address" placeholder="2.2 Token Contract Address in Scan" />
     <input type="text" name="Supply" placeholder="2.3 Total Supply" />
@@ -112,10 +112,17 @@ const ApplicationForm = ()=> {
   </fieldset>
   <fieldset id="fieldset3">
     <h2 class="fs-title">IDO Description</h2>
-    <h3 class="fs-subtitle">We will never sell it</h3>
-    <input type="text" name="fname" placeholder="First Name" />
-    <input type="text" name="lname" placeholder="Last Name" />
-    <input type="text" name="phone" placeholder="Phone" />
+    {/* <h3 class="fs-subtitle">We will never sell it</h3> */}
+    <input type="text" name="IDODate" placeholder="3.1 IDO Date" />
+    <input type="text" name="Start" placeholder="3.2 Start Time" />
+    <input type="text" name="Ended" placeholder="3.3 Ended Time" />
+    <input type="text" name="Vesting" placeholder="3.4 Vesting Rule" />
+    <input type="text" name="IDOPrice" placeholder="3.5 IDO Price" />
+    <input type="text" name="Raise" placeholder="3.6 How much to raise?(USD)" />
+    <input type="text" name="MarketCap" placeholder="3.7 Fully Diluted Market Cap(Auto Fill)" />
+    <input type="text" name="Sale" placeholder="3.8 How many tokens for sale?(Auto Fill)" />
+
+
     <textarea name="address" placeholder="Address"></textarea>
     <input id="previous2" type="button" name="previous" class="previous action-button" value="Previous" />
     <input id="submit" type="submit" name="submit" class="submit action-button" value="Submit" />

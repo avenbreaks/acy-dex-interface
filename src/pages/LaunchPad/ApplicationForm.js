@@ -69,8 +69,8 @@ const ApplicationForm = ()=> {
         <form id="msform">
   <ul id="progressbar">
     <li id="step1" class="active">Project Description</li>
-    <li id="step2">Social Profiles</li>
-    <li id="step3">Personal Details</li>
+    <li id="step2">Token Description</li>
+    <li id="step3">IDO Description</li>
   </ul>
   <fieldset id="fieldset1">
     <h2 class="fs-title">Project Description</h2>
@@ -100,16 +100,18 @@ const ApplicationForm = ()=> {
     <input id="next1" type="button" name="next" class="next action-button"  value="Next" />
   </fieldset>
   <fieldset id="fieldset2">
-    <h2 class="fs-title">Social Profiles</h2>
+    <h2 class="fs-title">Token Description</h2>
     <h3 class="fs-subtitle">Your presence on the social network</h3>
-    <input type="text" name="twitter" placeholder="Twitter" />
-    <input type="text" name="facebook" placeholder="Facebook" />
-    <input type="text" name="gplus" placeholder="Google Plus" />
+    <input type="text" name="Symbol" placeholder="2.1 Token Symbol" />
+    <input type="text" name="Address" placeholder="2.2 Token Contract Address in Scan" />
+    <input type="text" name="Supply" placeholder="2.3 Total Supply" />
+    <input type="url" name="EcoLink" placeholder="2.4 Token Econimics Link" />
+
     <input id="previous1" type="button" name="previous" class="previous action-button" value="Previous" />
     <input id="next2" type="button" name="next" class="next action-button" value="Next"   />
   </fieldset>
   <fieldset id="fieldset3">
-    <h2 class="fs-title">Personal Details</h2>
+    <h2 class="fs-title">IDO Description</h2>
     <h3 class="fs-subtitle">We will never sell it</h3>
     <input type="text" name="fname" placeholder="First Name" />
     <input type="text" name="lname" placeholder="Last Name" />

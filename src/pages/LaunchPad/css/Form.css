@@ -22,7 +22,7 @@
 
 /*form styles*/
 #msform {
-	width: 400px;
+	width: 600px;
 	margin: 50px auto;
 	text-align: center;
 	position: relative;
@@ -55,6 +55,9 @@
 	font-family: montserrat;
 	color: #2C3E50;
 	font-size: 13px;
+}
+#msform legeng{
+	color: #2C3E50;
 }
 /*buttons*/
 #msform .action-button {
@@ -132,4 +135,8 @@
 #progressbar li.active:before,  #progressbar li.active:after{
 	background: #27AE60;
 	color: white;
+}
+
+.fillBlank{
+	width: 20% !important;
 }

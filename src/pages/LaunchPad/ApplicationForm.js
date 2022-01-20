@@ -47,6 +47,16 @@ const ApplicationForm = ()=> {
       //hide the current fieldset with style
     }
 
+    const changeProgress = (num) => {
+      var current_fs, last_fs, previous_fs; //fieldsets
+      var left, opacity, scale; //fieldset properties which we will animate
+      var animating; //flag to prevent quick multi-click glitches
+      
+      console.log("click for change")
+      current_fs = document.getElementById("fieldset"+num);
+      last_fs = document.getElementById("fieldset"+(num-1));
+    }
+
     useEffect(() => {
 
 
@@ -116,14 +126,17 @@ const ApplicationForm = ()=> {
     <input type="text" name="IDODate" placeholder="3.1 IDO Date" />
     <input type="text" name="Start" placeholder="3.2 Start Time" />
     <input type="text" name="Ended" placeholder="3.3 Ended Time" />
-    <input type="text" name="Vesting" placeholder="3.4 Vesting Rule" />
+    <div>
+    <legeng>3.4 Vesting Rule: </legeng>
+      <input type="text" name="Vesting" className="fillBlank"  />
+      at TGE, then linear unclock during next <input type="text" className="fillBlank"></input> month
+    </div>
     <input type="text" name="IDOPrice" placeholder="3.5 IDO Price" />
     <input type="text" name="Raise" placeholder="3.6 How much to raise?(USD)" />
     <input type="text" name="MarketCap" placeholder="3.7 Fully Diluted Market Cap(Auto Fill)" />
     <input type="text" name="Sale" placeholder="3.8 How many tokens for sale?(Auto Fill)" />
 
 
-    <textarea name="address" placeholder="Address"></textarea>
     <input id="previous2" type="button" name="previous" class="previous action-button" value="Previous" />
     <input id="submit" type="submit" name="submit" class="submit action-button" value="Submit" />
   </fieldset>

@@ -99,6 +99,10 @@ const ApplicationForm = ()=> {
 
     }
 
+    const submitForm = (event)=>{
+      console.log(event);
+      console.log("send!")
+    }
     useEffect(() => {
 
 
@@ -112,7 +116,10 @@ const ApplicationForm = ()=> {
         document.getElementById("step2").addEventListener("click",()=>{changeProgress(2)});
         document.getElementById("step3").addEventListener("click",()=>{changeProgress(3)});
 
-
+        document.getElementById("submit").addEventListener("click",(event)=>{
+          submitForm(event)
+        })
+        
 
  
 

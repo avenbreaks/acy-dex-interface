@@ -48,13 +48,55 @@ const ApplicationForm = ()=> {
     }
 
     const changeProgress = (num) => {
-      var current_fs, last_fs, previous_fs; //fieldsets
+      var fs1, fs2, fs3; //fieldsets
       var left, opacity, scale; //fieldset properties which we will animate
       var animating; //flag to prevent quick multi-click glitches
       
       console.log("click for change")
-      current_fs = document.getElementById("fieldset"+num);
-      last_fs = document.getElementById("fieldset"+(num-1));
+      fs1 = document.getElementById("fieldset1");
+      fs2 = document.getElementById("fieldset2");
+      fs3 = document.getElementById("fieldset3");
+
+
+      switch (num) {
+        case 1:
+          document.getElementById("step2").classList.remove("active");
+          fs2.style.display="none";
+
+          document.getElementById("step3").classList.remove("active");
+          fs3.style.display="none";
+
+          fs1.style.display="block";
+          document.getElementById("step"+(num)).classList.add("active");
+
+        break;
+        
+        case 2:
+          document.getElementById("step3").classList.remove("active");
+          fs3.style.display="none";
+
+          fs1.style.display="none";
+          fs2.style.display="block";
+          document.getElementById("step"+(num)).classList.add("active");
+
+        break;
+        
+        case 3:
+          fs1.style.display="none";
+          fs2.style.display="none";
+          fs3.style.display="block";
+          document.getElementById("step"+(num)).classList.add("active");
+
+          document.getElementById("step2").classList.add("active");
+
+
+
+          break;
+        default:
+          break;
+      }
+
+
     }
 
     useEffect(() => {
@@ -65,6 +107,12 @@ const ApplicationForm = ()=> {
         document.getElementById("next2").addEventListener("click",(event)=>{nextProgress(2)});
         document.getElementById("previous1").addEventListener("click",()=>{previousProgress(2)});
         document.getElementById("previous2").addEventListener("click",()=>{previousProgress(3)});
+
+        document.getElementById("step1").addEventListener("click",()=>{changeProgress(1)});
+        document.getElementById("step2").addEventListener("click",()=>{changeProgress(2)});
+        document.getElementById("step3").addEventListener("click",()=>{changeProgress(3)});
+
+
 
  
 

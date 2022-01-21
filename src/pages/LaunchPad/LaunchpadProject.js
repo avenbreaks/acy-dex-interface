@@ -172,7 +172,10 @@ const CardArea = ({
         </div>
         <ProjectDescription receivedData={receivedData} />
         {/* { !comparesaleDate || compareAlloDate ? "" : <ChartCard className="launchpad-chart" /> } */}
-        {/* <ChartCard className="launchpad-chart" /> */}
+        <ChartCard className="launchpad-chart"
+         account={account}
+            library={library}
+             />
       </div>
     </div>
   );
@@ -373,7 +376,9 @@ const ProjectDescription = ({ receivedData }) => {
   );
 };
 
-const ChartCard = () => {
+const ChartCard = ( { account,
+  library}
+  ) => {
   const [chartData, setChartData] = useState([]);
   const [transferData, setTransferData] = useState([]);
 
@@ -418,16 +423,24 @@ const ChartCard = () => {
   };
 
   useEffect(async () => {
-    const [newTransferData, newChartData] = await getTransferData();
+
+    // const [newTransferData, newChartData] = await getTransferData();
+    const PoolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, library, account);
+    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+    window.p = PoolContract;
+    const InvestAmount = await PoolContract.GetInvestmentData;
+
+    console.log("100",InvestAmount());
+    // console.log(events)
 
     // ellipsis center address
-    newTransferData.forEach(data => {
-      data['participant'] = ellipsisCenter(data['participant']);
-    });
+    // newTransferData.forEach(data => {
+    //   data['participant'] = ellipsisCenter(data['participant']);
+    // });
 
-    newChartData.splice(0, newChartData.length - recordNum);
-    setTransferData(newTransferData);
-    setChartData(newChartData);
+    // newChartData.splice(0, newChartData.length - recordNum);
+    // setTransferData(newTransferData);
+    // setChartData(newChartData);
   }, []);
 
   return (
@@ -685,6 +698,7 @@ const Allocation = ({
       }
       // Check if users have collected token for current vesting stage
       const investorData = await PoolContract.GetInvestmentData(poolID, account)
+      console.log("investorData Check",investorData);
       const investorRes = []
       if (investorData) {
         investorData.map(data => investorRes.push(Number(BigNumber.from(data).toBigInt().toString())))

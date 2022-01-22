@@ -424,13 +424,15 @@ const ChartCard = ( { account,
 
   useEffect(async () => {
 
+    //TODO : Fetch ChartData Here 2
+    
     // const [newTransferData, newChartData] = await getTransferData();
-    const PoolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, library, account);
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
-    window.p = PoolContract;
-    const InvestAmount = await PoolContract.GetInvestmentData;
+    // const PoolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, library, account);
+    // console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+    // window.p = PoolContract;
+    // const InvestAmount = await PoolContract.GetInvestmentData;
 
-    console.log("100",InvestAmount());
+    // console.log("100",InvestAmount());
     // console.log(events)
 
     // ellipsis center address

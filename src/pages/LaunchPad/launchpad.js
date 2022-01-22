@@ -65,21 +65,24 @@ const LaunchpadComponent = () => {
         return str;
     }
       
-    useEffect(async () => {      
-        const [newTransferData, newChartData] = await getTransferData();
+    useEffect(async () => {     
+        // TODO: Fetch chartData from here 
+        
+        
+        // const [newTransferData, newChartData] = await getTransferData();
         
         // ellipsis center address
-        newTransferData.forEach(data => {
-            data['participant'] = ellipsisCenter(data['participant']);
-        })
+        // newTransferData.forEach(data => {
+        //     data['participant'] = ellipsisCenter(data['participant']);
+        // })
 
         // console.log('NewTransferData', newTransferData);
         // console.log('NewChartData', newChartData);
 
-        newChartData.splice(0, newChartData.length - recordNum);
-        console.log(newChartData);
-        setTransferData(newTransferData);
-        setChartData(newChartData);
+        // newChartData.splice(0, newChartData.length - recordNum);
+        // console.log(newChartData);
+        // setTransferData(newTransferData);
+        // setChartData(newChartData);
     }, [])
 
     const links = [

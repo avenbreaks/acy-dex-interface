@@ -32,6 +32,7 @@ import youtubeIcon from '@/assets/icon_youtube.svg';
 import githubIcon from '@/assets/icon_github.svg';
 import twitterWIcon from '@/assets/icon_twitter_white.svg';
 import linkWIcon from '@/assets/icon_link_white.svg';
+import linkBIcon from '@/assets/icon_open_in_new_window_black.svg'
 import whitepaperIcon from '@/assets/icon_file_white.svg';
 import deckIcon from '@/assets/icon_ppt.svg';
 import tokenEconomicsIcon from '@/assets/icon_googlesheets.svg';
@@ -43,10 +44,11 @@ import { useWeb3React } from '@web3-react/core';
 import { useConnectWallet } from "@/components/ConnectWallet";
 import POOLABI from "@/acy-dex-swap/abis/AcyV1Poolz.json";
 import Timer from "@/components/Timer";
-import { useConstantLoader, SCAN_URL_PREFIX, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST } from "@/constants";
+import { useConstantLoader, SCAN_URL_PREFIX, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST, LAUNCH_MAIN_TOKEN } from "@/constants";
 import { CustomError } from "@/acy-dex-swap/utils"
 import { approveNew, getAllowance } from "@/acy-dex-swap/utils"
 import FormatedTime from '@/components/FormatedTime';
+import { nFormatter } from './utils'
 
 const InputGroup = Input.Group;
 const logoObj = {
@@ -227,16 +229,31 @@ const TokenProcedure = ({ receivedData, poolBaseData, comparesaleDate, compareve
   };
 
   const ProgressBar = ({ alreadySale, totalSale, projectToken }) => {
-    const salePercentage = (100 * Number(alreadySale) / Number(totalSale)).toFixed(4)
-    let tokenNum;
+    const salePercentage = (100 * Number(alreadySale) / Number(totalSale)).toFixed(2)
+    let tokenNum, mainCoinNum;
     if (!alreadySale) {
       tokenNum = 0
+      mainCoinNum = 0
     } else {
       tokenNum = alreadySale
+      mainCoinNum = (receivedData.totalRaise * alreadySale / totalSale).toFixed(0)
     }
     const progressStyle = {
       width: { salePercentage } + '%',
     };
+
+    const clickToScan = (address) => {
+      let link_url
+      if (LAUNCH_MAIN_TOKEN() == receivedData.mainCoin) {
+        link_url = SCAN_URL_PREFIX() + '/address/' + address
+      } else {
+        link_url = SCAN_URL_PREFIX() + '/address/' + address + '#tokentxns'
+      }
+      const newWindow = window.open(link_url, '_blank', 'noopener,noreferrer');
+      if (newWindow) newWindow.opener = null;
+    }
+
+    const [isShowToken, setIsShowToken] = useState(false)
 
     return (
       <>
@@ -245,7 +262,15 @@ const TokenProcedure = ({ receivedData, poolBaseData, comparesaleDate, compareve
           style={{ background: '#1a1d1c', borderRadius: '0rem 0rem 1rem 1rem' }}
         >
           <div className="progressHeader">
-            <p>Sale Progress</p>
+            <p>Sale Progress
+              <img
+            className="link"
+            alt=""
+            src={linkBIcon}
+            loading="eager"
+            class="filter-acy-orange"
+            onClick={() => clickToScan(LAUNCHPAD_ADDRESS())}
+          /></p>
             <p style={{ color: '#eb5c1f' }}>{salePercentage}%</p>
           </div>
           <div className={styles.tokenProgress}>
@@ -258,8 +283,13 @@ const TokenProcedure = ({ receivedData, poolBaseData, comparesaleDate, compareve
               status={salePercentage === 0 ? "normal" : salePercentage !== 100 ? "active" : "success"}
             />
           </div>
-          <div className="progressAmount">
-            <div>{`${tokenNum} / ${totalSale} ${projectToken}`}</div>
+          <div className="progressAmount" onClick={() => setIsShowToken(!isShowToken)}>
+            {
+              isShowToken?
+              <div>{`${nFormatter(tokenNum, 3)} / ${nFormatter(totalSale, 3)} ${projectToken}`}</div>
+              :
+              <div>{`${nFormatter(mainCoinNum, 3)} / ${nFormatter(receivedData.totalRaise, 3)} ${receivedData.mainCoin}`}</div>
+            }
           </div>
         </div>
       </>
@@ -287,41 +317,27 @@ const TokenProcedure = ({ receivedData, poolBaseData, comparesaleDate, compareve
 
 const KeyInformation = ({ projectToken, totalSale, tokenPrice, receivedData, poolTokenAddress, poolMainCoinAddress }) => {
 
-  const clickToScan = (address) => {
-    let link_url = SCAN_URL_PREFIX() + '/address/' + address
-    const newWindow = window.open(link_url, '_blank', 'noopener,noreferrer');
-    if (newWindow) newWindow.opener = null;
-  }
-
   return (
     <div className="circleBorderCard cardContent">
       <div className="keyinfoRow">
         <div className="keyinfoName">Total Sales</div>
         <div>
-          {totalSale} {projectToken}
-          <img
+          {nFormatter(totalSale, 3)} {projectToken}
+          {/* <img
             className="link"
             alt=""
             src={linkWIcon}
             loading="eager"
             style={{ width: '15px', height: '15px', marginLeft: '0.2rem', cursor: 'pointer' }}
             onClick={() => clickToScan(poolTokenAddress)}
-          />
+          /> */}
         </div>
       </div>
 
       <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
         <div className="keyinfoName">Total Raise</div>
         <div>
-          {receivedData.totalRaise} {receivedData.mainCoin}
-          <img
-            className="link"
-            alt=""
-            src={linkWIcon}
-            loading="eager"
-            style={{ width: '15px', height: '15px', marginLeft: '0.2rem', cursor: 'pointer' }}
-            onClick={() => clickToScan(poolMainCoinAddress)}
-          />
+          {nFormatter(receivedData.totalRaise, 3)} {receivedData.mainCoin}
         </div>
       </div>
 
@@ -618,10 +634,14 @@ const Allocation = ({
     const value = e.target.value;
     if (!allocationInfo) setSalesValue(0);
     const allocationLeft = allocationInfo.allocationLeft;
+    if (typeof value !== "number") {
+      setSalesValue(allocationLeft)
+      return
+    }
     if (value > allocationLeft) {
       setSalesValue(allocationLeft);
-    } else if (value < 0) {
-      setSalesValue(0);
+    } else if (value < receivedData.minInvest) {
+      setSalesValue(receivedData.minInvest);
     } else {
       setSalesValue(value);
     }
@@ -835,7 +855,8 @@ const Allocation = ({
               <Input
                 className="sales-input"
                 value={salesValue}
-                onChange={onChangeSaleValue}
+                onChange={(e) => setSalesValue(e.target.value)}
+                onBlur={onChangeSaleValue}
               />
               <div className="unit-max-group">
                 <div className="token-logo">
@@ -1019,6 +1040,7 @@ const LaunchpadProject = () => {
           res['salePercentage'] = contextData['salePercentage'];
           res['posterUrl'] = contextData['posterUrl'];
           res['tokenLogoUrl'] = res.basicInfo.projectTokenUrl;
+          res['minInvest'] = res.allocationInfo.parameters.minInvest
 
           res['regStart'] = res.scheduleInfo.regStart;
           res['regEnd'] = res.scheduleInfo.regEnd;

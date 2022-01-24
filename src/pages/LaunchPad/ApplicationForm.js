@@ -112,8 +112,10 @@ const ApplicationForm = ()=> {
 
 // show a message with a type of the input
 function showMessage(input, message, type) {
+
+  console.log(input.parentNode)
 	// get the small element and set the message
-	const msg = input.parentNode.querySelector("small");
+	const msg = input[0].parentNode.querySelector("small");
 	msg.innerText = message;
 	// update the class for the input
 	input.className = type ? "success" : "error";
@@ -130,7 +132,9 @@ function showSuccess(input) {
 
 function hasValue(input, message) {
   console.log(input)
-	if (input.trim() === "") {
+  
+  //if (input.trim() === "") {
+	if (input[0].value.trim() === "") {
 		return showError(input, message);
 	}
 	return showSuccess(input);
@@ -145,7 +149,7 @@ function validateEmail(input, requiredMsg, invalidMsg) {
 	const emailRegex =
 		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-	const email = input.value.trim();
+	const email = input[0].value.trim();
 	if (!emailRegex.test(email)) {
 		return showError(input, invalidMsg);
 	}
@@ -179,22 +183,25 @@ const EMAIL_INVALID = "Please enter a correct email address format";
 
       
 
-        document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
+        //document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
         
-        // document.getElementById("next1").addEventListener("click",function (event) {
-        //   // stop form submission
-        //   //event.preventDefault();
+        document.getElementById("next1").addEventListener("click",function (event) {
+          // stop form submission
+          //event.preventDefault();
         
-        //   // validate the form
+          // validate the form
           
-        //   let nameValid = hasValue(document.getElementsByName("ContacterTg")[0].value
-        //   , NAME_REQUIRED);
-        //   let emailValid = validateEmail(document.getElementById("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
-        //   // if valid, submit the form.
-        //   if (nameValid && emailValid) {
-        //     //alert("Next/Submit");
-        //   }
-        // });
+          //let nameValid = hasValue(document.getElementsByName("ContacterTg")[0].value, NAME_REQUIRED);
+          //let emailValid = validateEmail(document.getElementByName("OfficialEmail")[0].value, EMAIL_REQUIRED, EMAIL_INVALID);
+          let nameValid = hasValue(document.getElementsByName("ContacterTg"), NAME_REQUIRED);
+          let emailValid = validateEmail(document.getElementsByName("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
+          
+          
+          // if valid, submit the form.
+          if (nameValid && emailValid) {
+            //alert("Next/Submit");
+          }
+        });
 
         document.getElementById("next2").addEventListener("click",(event)=>{nextProgress(2)});
 

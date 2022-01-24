@@ -129,7 +129,8 @@ function showSuccess(input) {
 }
 
 function hasValue(input, message) {
-	if (input.value.trim() === "") {
+  console.log(input)
+	if (input.trim() === "") {
 		return showError(input, message);
 	}
 	return showSuccess(input);
@@ -164,7 +165,7 @@ const EMAIL_INVALID = "Please enter a correct email address format";
       var object = {};
       var f = document.getElementById("msform");
       f.forEach( (element,key) => {
-        console.log(element,key)
+        console.log("inde111",element,key)
         if(key != 0 && key != 16 && key != 23 && key != 15 && key != 21 && key != 22 && key!= 34 && key != 35){
           object[element.name] = element.value;
     
@@ -174,26 +175,26 @@ const EMAIL_INVALID = "Please enter a correct email address format";
       console.log(JSON.stringify(object))
 
     }
-
     useEffect(() => {
 
       
 
-        //document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
+        document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
         
-        document.getElementById("next1").addEventListener("click",function (event) {
-          // stop form submission
-          //event.preventDefault();
+        // document.getElementById("next1").addEventListener("click",function (event) {
+        //   // stop form submission
+        //   //event.preventDefault();
         
-          // validate the form
+        //   // validate the form
           
-          let nameValid = hasValue(document.getElementById("ContacterT"), NAME_REQUIRED);
-          let emailValid = validateEmail(document.getElementById("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
-          // if valid, submit the form.
-          if (nameValid && emailValid) {
-            //alert("Next/Submit");
-          }
-        });
+        //   let nameValid = hasValue(document.getElementsByName("ContacterTg")[0].value
+        //   , NAME_REQUIRED);
+        //   let emailValid = validateEmail(document.getElementById("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
+        //   // if valid, submit the form.
+        //   if (nameValid && emailValid) {
+        //     //alert("Next/Submit");
+        //   }
+        // });
 
         document.getElementById("next2").addEventListener("click",(event)=>{nextProgress(2)});
 

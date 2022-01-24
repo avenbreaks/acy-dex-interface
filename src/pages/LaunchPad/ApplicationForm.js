@@ -110,6 +110,54 @@ const ApplicationForm = ()=> {
 
     }
 
+// show a message with a type of the input
+function showMessage(input, message, type) {
+	// get the small element and set the message
+	const msg = input.parentNode.querySelector("small");
+	msg.innerText = message;
+	// update the class for the input
+	input.className = type ? "success" : "error";
+	return type;
+}
+
+function showError(input, message) {
+	return showMessage(input, message, false);
+}
+
+function showSuccess(input) {
+	return showMessage(input, "", true);
+}
+
+function hasValue(input, message) {
+	if (input.value.trim() === "") {
+		return showError(input, message);
+	}
+	return showSuccess(input);
+}
+
+function validateEmail(input, requiredMsg, invalidMsg) {
+	// check if the value is not empty
+	if (!hasValue(input, requiredMsg)) {
+		return false;
+	}
+	// validate email format
+	const emailRegex =
+		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+	const email = input.value.trim();
+	if (!emailRegex.test(email)) {
+		return showError(input, invalidMsg);
+	}
+	return true;
+}
+
+const form = document.querySelector("msform");
+
+const NAME_REQUIRED = "Please enter your name";
+const EMAIL_REQUIRED = "Please enter your email";
+const EMAIL_INVALID = "Please enter a correct email address format";
+
+
     const submitForm = (event)=>{
       console.log(event);
       console.log("send!")
@@ -126,11 +174,27 @@ const ApplicationForm = ()=> {
       console.log(JSON.stringify(object))
 
     }
+
     useEffect(() => {
 
+      
 
+        //document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
+        
+        document.getElementById("next1").addEventListener("click",function (event) {
+          // stop form submission
+          //event.preventDefault();
+        
+          // validate the form
+          
+          let nameValid = hasValue(document.getElementById("ContacterT"), NAME_REQUIRED);
+          let emailValid = validateEmail(document.getElementById("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
+          // if valid, submit the form.
+          if (nameValid && emailValid) {
+            //alert("Next/Submit");
+          }
+        });
 
-        document.getElementById("next1").addEventListener("click",(event)=>{nextProgress(1)});
         document.getElementById("next2").addEventListener("click",(event)=>{nextProgress(2)});
 
         document.getElementById("previous1").addEventListener("click",()=>{previousProgress(2)});
@@ -165,11 +229,16 @@ const ApplicationForm = ()=> {
             <fieldset id="fieldset1">
               <h2 class="fs-title">Project Description</h2>
               {/* <h3 class="fs-subtitle">This is step 1</h3> */}
-              <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username" />
+              <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username(etc)" />
+              <small></small>
               <input type="text" name="ProjectName" placeholder="1.2 ProjectName" />
+              <small></small>
               <input type="email" name="OfficialEmail" placeholder="1.3 Official Email Address" />
+              <small></small>
               <input type="url" name="Website" placeholder="1.4 Project Website" />
+              <small></small>
               <input type="url" name="Logo" placeholder="1.5 Project Logo URL (SVG Prefferred)" />
+              <small></small>
               <textarea name="Description" placeholder="1.6 ProjectDescription" />
               {/* <select>
                 <option value="volvo">Volvo</option>

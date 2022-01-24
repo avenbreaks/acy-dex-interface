@@ -47,7 +47,10 @@ import Timer from "@/components/Timer";
 import { useConstantLoader, SCAN_URL_PREFIX, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST, LAUNCH_MAIN_TOKEN } from "@/constants";
 import { CustomError } from "@/acy-dex-swap/utils"
 import { approveNew, getAllowance } from "@/acy-dex-swap/utils"
+import { AcyTabs } from "@/components/Acy";
 import FormatedTime from '@/components/FormatedTime';
+import WhileList from './components/WhileList';
+import SaleList from './components/SaleList';
 import { nFormatter } from './utils'
 
 const InputGroup = Input.Group;
@@ -458,26 +461,36 @@ const ChartCard = ( { account,
 
     // newChartData.splice(0, newChartData.length - recordNum);
     // setTransferData(newTransferData);
-    // setChartData(newChartData);
+    setChartData([['2000-06-05', 116],
+    ['2000-06-06', 129],
+    ['2000-06-07', 135],
+    ['2000-06-08', 86],
+    ['2000-06-09', 73],
+    ['2000-06-10', 85],
+    ['2000-06-11', 73],
+    ['2000-06-12', 68]]);
   }, []);
 
   return (
     <div className="circleBorderCard cardContent">
-      <LaunchChart
-        data={chartData}
-        showXAxis
-        showYAxis
-        showGradient
-        lineColor="#e29227"
-        bgColor="#2f313500"
-      />
-      <Table
-        id="transferTable"
-        columns={transferTableHeader}
-        dataSource={transferData}
-        pagination={false}
-        scroll={{ y: 400 }}
-      />
+      <AcyTabs>
+        <AcyTabs.AcyTabPane tab="Whilelist" key={1}>
+          <WhileList dataSource={transferData}/>
+        </AcyTabs.AcyTabPane>
+        <AcyTabs.AcyTabPane tab="Sale" key={2}>
+          <SaleList  dataSource={transferData}/>
+        </AcyTabs.AcyTabPane>
+        <AcyTabs.AcyTabPane tab="Chart" key={3}>
+          <LaunchChart
+            data={chartData}
+            showXAxis
+            showYAxis
+            showGradient
+            lineColor="#e29227"
+            bgColor="#2f313500"
+          />
+        </AcyTabs.AcyTabPane>
+      </AcyTabs>
     </div>
   );
 };

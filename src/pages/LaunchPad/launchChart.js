@@ -69,15 +69,15 @@ class launchChart extends Component {
       update: 0
     };
   }
-  componentDidMount() {}
+  componentDidMount() { }
   // getOption 这个函数主要用于配置 option，包括将数据配置进去
   // 也可以将其放在 state 中，然后通过 setState 更新
   // setState wrapper
 
   // re render when the data changes
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.data !== this.props.data) {
-      
+
       // dummy state update to force re render
       this.setState({
         data: this.props.data
@@ -101,10 +101,10 @@ class launchChart extends Component {
     if (!this.props.data) {
       chartData = defaultData;
     }
-    var dateList = chartData.map(function(item) {
+    var dateList = chartData.map(function (item) {
       return item[0];
     });
-    var valueList = chartData.map(function(item) {
+    var valueList = chartData.map(function (item) {
       return item[1];
     });
 
@@ -133,31 +133,17 @@ class launchChart extends Component {
       },
       xAxis: {
         show: showXAxis,
-        splitNumber: 5,
-        boundaryGap: false,
         data: dateList,
-        // .map(function(item) {
-        //   return item.slice(item.length - 2, item.length);
-        // }),
-        axisTick: { show: false }, // 刻度
-        axisLine: { show: false }, // 轴线
-        splitLine: {
-          show: false,
-        },
+        axisLabel: { color: "#b5b5b6"}
       },
       yAxis: {
         tyle: 'value',
-        position:'right',
-        axisTick: { show: false }, // 刻度
-        axisLine: { show: false }, // 轴线
-        splitLine: {
-          show: false,
-        },
-        axisLabel:{
-          align: 'center'
-        }
-             },
+      },
       series: [
+        {
+          type: 'bar',
+          data: valueList
+        },
         {
           data: valueList,
           type: 'line',
@@ -178,14 +164,14 @@ class launchChart extends Component {
       ],
     };
 
-    if (this.props.showGradient == true) {
-      options.series[0].areaStyle = {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: this.props.lineColor || '#c6224e' },
-          { offset: 1, color: this.props.bgColor || '#29292c' },
-        ]),
-      };
-    }
+    // if (this.props.showGradient == true) {
+    //   options.series[0].areaStyle = {
+    //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+    //       { offset: 0, color: this.props.lineColor || '#c6224e' },
+    //       { offset: 1, color: this.props.bgColor || '#29292c' },
+    //     ]),
+    //   };
+    // }
 
     return options;
   };
@@ -207,8 +193,8 @@ class launchChart extends Component {
           this.echartsElement = e;
         }}
         onEvents={onEvents}
-        // onChartReady={this.onChartReadyCallback}
-        // onEvents={EventsDict}
+      // onChartReady={this.onChartReadyCallback}
+      // onEvents={EventsDict}
       />
     );
   }

@@ -2,16 +2,18 @@ import { useState, useEffect } from "react";
 import { Table } from "antd";
 import { AcyModal } from "@/components/Acy";
 const WhileList = props => {
+    const [addVisibale,SetAddVisibale]=useState(false);// 新增弹窗
+    const [editVisibale,SetEditVisibale]=useState(false);// 编辑弹窗
     const {editFun}=props;
     // Add 
     const Add=props=>{
-        return <AcyModal>
+        return <AcyModal onCancel={()=>SetAddVisibale(false)} width={800} visible={addVisibale}>
 
         </AcyModal>
     }
     // Edit
     const Edit=props=>{
-        return <AcyModal>
+        return <AcyModal  onCancel={()=>SetEditVisibale(false)} width={800} visible={editVisibale}>
             
         </AcyModal>
     }

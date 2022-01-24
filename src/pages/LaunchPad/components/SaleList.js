@@ -2,22 +2,22 @@ import { useState, useEffect } from "react";
 import { Table } from "antd";
 import { AcyModal } from "@/components/Acy";
 const WhileList = props => {
-    const {editFun}=props;
+    const { editFun } = props;
     // Add 
-    const Add=props=>{
-        return <AcyModal>
+    const Add = props => {
+        return <AcyModal onCancel={() => SetAddVisibale(false)} width={800} visible={addVisibale}>
 
         </AcyModal>
     }
     // Edit
-    const Edit=props=>{
-        return <AcyModal>
-            
+    const Edit = props => {
+        return <AcyModal onCancel={() => SetEditVisibale(false)} width={800} visible={editVisibale}>
+
         </AcyModal>
     }
     // Delete
-    const Delete=props=>{
-        
+    const Delete = props => {
+
     }
     const transferTableHeader = [
         {
@@ -49,7 +49,7 @@ const WhileList = props => {
             ellipsis: true,
         },
     ];
-    const {dataSource}=props;
+    const { dataSource } = props;
     return <Table
         id="transferTable"
         columns={transferTableHeader}

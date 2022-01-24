@@ -59,6 +59,10 @@
 #msform legeng{
 	color: #2C3E50;
 }
+
+.field small {
+	color: #dc3545;
+}
 /* input error */
 input.error,
 textarea.error,

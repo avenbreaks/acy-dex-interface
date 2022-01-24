@@ -113,7 +113,7 @@ const ApplicationForm = ()=> {
 // show a message with a type of the input
 function showMessage(input, message, type) {
 
-  console.log(input.parentNode)
+  console.log(input[0].parentNode)
 	// get the small element and set the message
 	const msg = input[0].parentNode.querySelector("small");
 	msg.innerText = message;
@@ -131,9 +131,7 @@ function showSuccess(input) {
 }
 
 function hasValue(input, message) {
-  console.log(input)
   
-  //if (input.trim() === "") {
 	if (input[0].value.trim() === "") {
 		return showError(input, message);
 	}
@@ -158,9 +156,34 @@ function validateEmail(input, requiredMsg, invalidMsg) {
 
 const form = document.querySelector("msform");
 
-const NAME_REQUIRED = "Please enter your name";
-const EMAIL_REQUIRED = "Please enter your email";
-const EMAIL_INVALID = "Please enter a correct email address format";
+const PWD_REQUIRED = "Please enter your password"; //1.0
+const NAME_REQUIRED = "Please enter your name";    //1.1
+const EMAIL_REQUIRED = "Please enter your email"; //1.2
+const EMAIL_INVALID = "Please enter a correct email address format"; //1.3
+
+const WEB_REQUIRED = "Please enter your project website"; //1.4
+const LOGO_REQUIRED = "Please enter your logo url";  //1.5
+const DESCRIP_REQUIRED = "Please enter your project description"; //1.6
+const CATEGORY_REQUIRED = "Please enter your project category"; //1.7
+const PROJIN_REQUIRED = "Please enter where your project is built in"; //1.8
+
+const URL_REQUIRED = "Please enter url"; //1.9-1.14
+
+const SYMBOL_REQUIRED = "Please enter your Token Symbol"; //2.1
+const ADD_REQUIRED = "Please enter your Token Contract Address"; //2.2
+const SUPPLY_REQUIRED = "Please enter your Token Supply"; //2.3
+const ECOLINK_REQUIRED = "Please enter your Token Econimics Link"; //2.4
+
+const IDO_REQUIRED = "Please enter IDO Date"; //3.1
+const START_REQUIRED = "Please enter Start Time"; //3.2
+const ENDED_REQUIRED = "Please enter Ended Time"; //3.3
+
+const VEST_REQUIRED = "Please fill in the blanks"; //3.4 ALL
+
+const IDOPRICE_REQUIRED = "Please enter IDO Price"; //3.5
+const RAISE_REQUIRED = "Please enter USD"; //3.6
+
+//3.8 3.9 Autofill
 
 
     const submitForm = (event)=>{
@@ -191,15 +214,13 @@ const EMAIL_INVALID = "Please enter a correct email address format";
         
           // validate the form
           
-          //let nameValid = hasValue(document.getElementsByName("ContacterTg")[0].value, NAME_REQUIRED);
-          //let emailValid = validateEmail(document.getElementByName("OfficialEmail")[0].value, EMAIL_REQUIRED, EMAIL_INVALID);
           let nameValid = hasValue(document.getElementsByName("ContacterTg"), NAME_REQUIRED);
           let emailValid = validateEmail(document.getElementsByName("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
           
           
           // if valid, submit the form.
           if (nameValid && emailValid) {
-            //alert("Next/Submit");
+            (event)=>{nextProgress(1)};
           }
         });
 
@@ -237,7 +258,9 @@ const EMAIL_INVALID = "Please enter a correct email address format";
             <fieldset id="fieldset1">
               <h2 class="fs-title">Project Description</h2>
               {/* <h3 class="fs-subtitle">This is step 1</h3> */}
-              <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username(etc)" />
+              <input type="text" name="PassWord" placeholder="1.0 Your Project Password(Please remember!!!)" />
+              <small></small>
+              <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username" />
               <small></small>
               <input type="text" name="ProjectName" placeholder="1.2 ProjectName" />
               <small></small>

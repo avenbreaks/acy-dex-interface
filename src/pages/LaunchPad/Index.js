@@ -7,8 +7,7 @@ import announcementIcon from '@/assets/icon_announcement.svg';
 import OngoingProjects from './components/OngoingProjects.js';
 import IncomingProjects from './components/IncomingProjects.js';
 import EndedProjects from './components/EndedProjects.js';
-
-
+import PendingProjects from './components/PendingProjects.js';
 import BubblyButton from './components/BubblyButton.js';
 import RaiseButton from './components/RaiseButton.js';
 import $ from 'jquery';
@@ -24,6 +23,7 @@ const Pool = props => {
   const [ongoingData, setOngoingData] = useState([]);
   const [upcomingData, setUpcomingData] = useState([]);
   const [endedData, setEndedData] = useState([]);
+  const [pendingData, setPendingData] = useState([]);
 
   const history = useHistory();
   // const onClickProject = projectID => {
@@ -31,7 +31,7 @@ const Pool = props => {
   //   history.push(`/launchpad/project/${projectID}`);
   // };
 
-  const applyProject = ()=> {
+  const applyProject = () => {
     history.push('/launchpad/applyProject')
     console.log("jump")
   }
@@ -56,12 +56,14 @@ const Pool = props => {
           const newOngoingData = [];
           const newUpcomingData = [];
           const newEndedData = [];
+          const newPendingData = [];
           // get all projects from db
           res.forEach(obj => {
-            console.log(obj);
+            console.log("Get OBJ!!!!!:  ", obj);
             if (obj.projectStatus === 'Ongoing') newOngoingData.push(obj);
             else if (obj.projectStatus === 'Upcoming') newUpcomingData.push(obj);
             else if (obj.projectStatus === 'Ended') newEndedData.push(obj);
+            else if (obj.projectStatus === 'Pending') newPendingData.push(obj);
           }
             // obj.projectStatus === 'Ongoing'
             //   ? newOngoingData.push(obj)
@@ -73,6 +75,8 @@ const Pool = props => {
           setOngoingData([...newOngoingData]);
           setUpcomingData([...newUpcomingData]);
           setEndedData([...newEndedData]);
+          setPendingData([...newPendingData]);
+          console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH   ended data: ", endedData)
         } else {
           console.log('Failed to retrieve data from database');
         }
@@ -159,8 +163,15 @@ const Pool = props => {
               <EndedProjects data={endedData} />
             </div>
           </div>
-
-          
+          <div className={styles.projectBoxes}>
+            <div className={styles.titleBlock}>
+              <span className={styles.anyStatusTitle}>Pending Projects</span>
+              <div className={styles.lineSeperator} />
+            </div>
+            {<div className={styles.projectsContainer}>
+              <PendingProjects data={endedData} />
+            </div>}
+          </div>
         </section>
       </div>
     </div>

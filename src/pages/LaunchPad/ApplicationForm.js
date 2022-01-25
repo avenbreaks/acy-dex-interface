@@ -120,8 +120,8 @@ const ApplicationForm = () => {
     const msg = input[0].nextElementSibling;
     msg.innerText = message;
     // update the class for the input
-    // input[0].className = type ? "success" : "error";
-    input[0].classList.add("error")
+    input[0].className = type ? "success" : "error";
+    //input[0].classList.add("error")
     return type;
   }
 
@@ -159,7 +159,6 @@ const ApplicationForm = () => {
 
   const form = document.querySelector("msform");
 
-  const PWD_REQUIRED = "Please enter your password"; //1.0
   const NAME_REQUIRED = "Please enter your username";    //1.1
   const PROJNAME_REQUIRED = "Please enter your project name";    //1.2
 
@@ -220,9 +219,24 @@ const ApplicationForm = () => {
       // validate the form
 
       let nameValid = hasValue(document.getElementsByName("ContacterTg"), NAME_REQUIRED);
+      let PnameValid = hasValue(document.getElementsByName("ProjectName"), PROJNAME_REQUIRED);
       let emailValid = validateEmail(document.getElementsByName("OfficialEmail"), EMAIL_REQUIRED, EMAIL_INVALID);
 
-      //let PnameValid = hasValue(document.getElementsByName("ProjectName"), PROJNAME_REQUIRED);
+      let WebValid = hasValue(document.getElementsByName("Website"), WEB_REQUIRED);
+      let LogoValid = hasValue(document.getElementsByName("Logo"), LOGO_REQUIRED);
+      let DesValid = hasValue(document.getElementsByName("Description"), DESCRIP_REQUIRED);
+      
+
+      
+  // const LOGO_REQUIRED = "Please enter your logo url";  //1.5
+  // const DESCRIP_REQUIRED = "Please enter your project description"; //1.6
+  // const CATEGORY_REQUIRED = "Please enter your project category"; //1.7
+  // const PROJIN_REQUIRED = "Please enter where your project is built in"; //1.8
+ 
+  
+ 
+  
+  const URL_REQUIRED = "Please enter url"; //1.9-1.14
 
 
       // if valid, submit the form.
@@ -265,8 +279,6 @@ const ApplicationForm = () => {
           <fieldset id="fieldset1">
             <h2 class="fs-title">Project Description</h2>
             {/* <h3 class="fs-subtitle">This is step 1</h3> */}
-            <input type="text" name="PassWord" placeholder="1.0 Your Project Password(Please remember!!!)" />
-            <small className="fieldsmall"></small>
             <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username" />
             <small></small>
             <input type="text" name="ProjectName" placeholder="1.2 ProjectName" />
@@ -278,6 +290,7 @@ const ApplicationForm = () => {
             <input type="url" name="Logo" placeholder="1.5 Project Logo URL (SVG Prefferred)" />
             <small></small>
             <textarea name="Description" placeholder="1.6 ProjectDescription" />
+            <small></small>
             {/* <select>
                 <option value="volvo">Volvo</option>
                 <option value="saab">Saab</option>

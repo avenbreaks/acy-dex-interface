@@ -11,6 +11,8 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
   const history = useHistory();
   const onOpenProjectDetail = (p) => {
     history.push(`/launchpad/project/${p}`);
+
+    
   };
 
   return (

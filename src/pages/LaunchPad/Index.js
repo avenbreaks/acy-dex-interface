@@ -7,6 +7,8 @@ import announcementIcon from '@/assets/icon_announcement.svg';
 import OngoingProjects from './components/OngoingProjects.js';
 import IncomingProjects from './components/IncomingProjects.js';
 import EndedProjects from './components/EndedProjects.js';
+
+
 import BubblyButton from './components/BubblyButton.js';
 import RaiseButton from './components/RaiseButton.js';
 import $ from 'jquery';
@@ -157,6 +159,8 @@ const Pool = props => {
               <EndedProjects data={endedData} />
             </div>
           </div>
+
+          
         </section>
       </div>
     </div>

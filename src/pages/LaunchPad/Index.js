@@ -59,7 +59,7 @@ const Pool = props => {
           const newPendingData = [];
           // get all projects from db
           res.forEach(obj => {
-            console.log("Get OBJ!!!!!:  ", obj);
+            console.log(obj);
             if (obj.projectStatus === 'Ongoing') newOngoingData.push(obj);
             else if (obj.projectStatus === 'Upcoming') newUpcomingData.push(obj);
             else if (obj.projectStatus === 'Ended') newEndedData.push(obj);
@@ -76,7 +76,6 @@ const Pool = props => {
           setUpcomingData([...newUpcomingData]);
           setEndedData([...newEndedData]);
           setPendingData([...newPendingData]);
-          console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH   ended data: ", endedData)
         } else {
           console.log('Failed to retrieve data from database');
         }

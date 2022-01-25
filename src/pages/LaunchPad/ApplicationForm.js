@@ -112,16 +112,16 @@ const ApplicationForm = () => {
 
 
   }
-
   // show a message with a type of the input
   function showMessage(input, message, type) {
 
     console.log(input[0].parentNode)
     // get the small element and set the message
-    const msg = input[0].parentNode.querySelector("small");
+    const msg = input[0].nextElementSibling;
     msg.innerText = message;
     // update the class for the input
-    input.className = type ? "success" : "error";
+    // input[0].className = type ? "success" : "error";
+    input[0].classList.add("error")
     return type;
   }
 
@@ -266,7 +266,7 @@ const ApplicationForm = () => {
             <h2 class="fs-title">Project Description</h2>
             {/* <h3 class="fs-subtitle">This is step 1</h3> */}
             <input type="text" name="PassWord" placeholder="1.0 Your Project Password(Please remember!!!)" />
-            <small></small>
+            <small className="fieldsmall"></small>
             <input type="text" name="ContacterTg" placeholder="1.1 Your Telegram Username" />
             <small></small>
             <input type="text" name="ProjectName" placeholder="1.2 ProjectName" />

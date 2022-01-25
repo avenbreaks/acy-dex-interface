@@ -55,19 +55,19 @@
 	font-family: montserrat;
 	color: #2C3E50;
 	font-size: 13px;
+	
 }
 #msform legeng{
 	color: #2C3E50;
 }
 
-.field small {
+#msform small {
 	color: #dc3545;
 }
-/* input error */
 input.error,
 textarea.error,
 select.error {
-	border-color: #dc3545;
+	border-color: #dc3545 !important;
 }
 
 input.error:focus,

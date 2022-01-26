@@ -4,7 +4,7 @@ import './css/Form.css';
 
 // CONSTANTS
 const INITIAL_FORM = {
-  
+  //1
   username: '',
   projectname: '',
   email: '',
@@ -21,10 +21,30 @@ const INITIAL_FORM = {
   linkedinLINK: '',
   discordLINK: '',
 
+  //2
+  symbol: '',
+  address: '',
+  supply: '',
+  ecolink: '',
+
+  //3
+  idoDate: '',
+  start: '',
+  ended: '',
+
+  vestingStart: '',
+  vestingMonth: '',
+  vestingDate: '',
+
+  idoPrice: '',
+  raise: '',
+  marketcap: '',
+  sale: '',
+
 }
 
 const PLACE_HOLDERS = {
-
+  //1
   username: '1.1 Your Telegram Username',
   projectname: '1.2 ProjectName',
   email: '1.3 Official Email Address',
@@ -40,6 +60,26 @@ const PLACE_HOLDERS = {
   twitterLINK: '1.12 Twitter Link',
   linkedinLINK: '1.13 Linkedin Link',
   discordLINK: '1.14 Discord Link',
+  //2
+  symbol: '2.1 Token Symbol',
+  address: '2.2 Token Contract Address in Scan',
+  supply: '2.3 Total Supply',
+  ecolink: '2.4 Token Econimics Link',
+
+  //3
+  idoDate: '3.1 IDO Date',
+  start: '3.2 Start Time',
+  ended: '3.3 Ended Time',
+
+  vestingStart: 'fillBlank',
+  vestingMonth: 'fillBlank',
+  vestingDate: 'fillBlank',
+
+  idoPrice: '3.5 IDO Price',
+  raise: '3.6 How much to raise?(USD)',
+  marketcap: '3.7 Fully Diluted Market Cap(Auto Fill)',
+  sale: '3.8 How many tokens for sale?(Auto Fill)',
+
 
 }
 
@@ -58,12 +98,12 @@ const VALIDATION_FUNCTIONS = {
 }
 
 const ERROR_INFOS = {
-
+  //1
   username: "Username length should be larger than 5",//"Please enter your username"
   projectname: "Please enter your project name",
   email:  //{
     "Please enter your email"//,
-    //"Please enter a correct email address format"
+  //"Please enter a correct email address format"
   //}
   ,
   websiteURL: "Please enter your project website url",
@@ -79,21 +119,28 @@ const ERROR_INFOS = {
   linkedinLINK: "Please enter url",
   discordLINK: "Please enter url",
 
+  //2
+  symbol: "Please enter your Token Symbol", //2.1
+  address:  "Please enter your Token Contract Address", //2.2
+  supply: "Please enter your Token Supply", //2.3
+  ecolink: "Please enter your Token Econimics Link",//2.4
+
+  //3
+  idoDate: "Please enter IDO Date", //3.1
+  start: "Please enter Start Time", //3.2
+  ended: "Please enter Ended Time", //3.3
+
+  vestingStart: "Please fill in the blanks", //3.4 ALL
+  vestingMonth: "Please fill in the blanks", //3.4 ALL
+  vestingDate: "Please fill in the blanks", //3.4 ALL
+
+  idoPrice: "Please enter IDO Price", //3.5
+  raise: "Please enter USD", //3.6
+
+  marketcap: '',
+  sale: '',
 
 
-  // const SYMBOL_REQUIRED = "Please enter your Token Symbol"; //2.1
-  // const ADD_REQUIRED = "Please enter your Token Contract Address"; //2.2
-  // const SUPPLY_REQUIRED = "Please enter your Token Supply"; //2.3
-  // const ECOLINK_REQUIRED = "Please enter your Token Econimics Link"; //2.4
-
-  // const IDO_REQUIRED = "Please enter IDO Date"; //3.1
-  // const START_REQUIRED = "Please enter Start Time"; //3.2
-  // const ENDED_REQUIRED = "Please enter Ended Time"; //3.3
-
-  // const VEST_REQUIRED = "Please fill in the blanks"; //3.4 ALL
-
-  // const IDOPRICE_REQUIRED = "Please enter IDO Price"; //3.5
-  // const RAISE_REQUIRED = "Please enter USD"; //3.6
 }
 
 // COMPONENTS
@@ -114,7 +161,7 @@ const InputField = ({
         setIsError(false);
       }
     }
-  } 
+  }
 
   const onBlurField = (e) => {
     const value = e.target.value;
@@ -183,21 +230,21 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Create your account</h2>
             <h3 className="fs-subtitle">This is step 1</h3>
-            <InputField name="username" setFormField={setFormField}/>
-            <InputField name="projectname" setFormField={setFormField}/>
-            <InputField name="email" setFormField={setFormField}/>
-            <InputField name="websiteURL" setFormField={setFormField}/>
-            <InputField name="logoURL" setFormField={setFormField}/>
-            <InputField name="description" setFormField={setFormField}/>
-            <InputField name="category" setFormField={setFormField}/>
-            <InputField name="projectIn" setFormField={setFormField}/>
+            <InputField name="username" setFormField={setFormField} />
+            <InputField name="projectname" setFormField={setFormField} />
+            <InputField name="email" setFormField={setFormField} />
+            <InputField name="websiteURL" setFormField={setFormField} />
+            <InputField name="logoURL" setFormField={setFormField} />
+            <InputField name="description" setFormField={setFormField} />
+            <InputField name="category" setFormField={setFormField} />
+            <InputField name="projectIn" setFormField={setFormField} />
 
-            <InputField name="whitepaperLINK" setFormField={setFormField}/>
-            <InputField name="githubLINK" setFormField={setFormField}/>
-            <InputField name="telegramLINK" setFormField={setFormField}/>
-            <InputField name="twitterLINK" setFormField={setFormField}/>
-            <InputField name="linkedinLINK" setFormField={setFormField}/>
-            <InputField name="discordLINK" setFormField={setFormField}/>
+            <InputField name="whitepaperLINK" setFormField={setFormField} />
+            <InputField name="githubLINK" setFormField={setFormField} />
+            <InputField name="telegramLINK" setFormField={setFormField} />
+            <InputField name="twitterLINK" setFormField={setFormField} />
+            <InputField name="linkedinLINK" setFormField={setFormField} />
+            <InputField name="discordLINK" setFormField={setFormField} />
 
             <input type="button" name="next" className="next action-button" value="Next" onClick={() => setCurrentFieldIndex(1)} />
           </fieldset>
@@ -207,10 +254,10 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Social Profiles</h2>
             <h3 className="fs-subtitle">Your presence on the social network</h3>
-            <InputField name="symbol" setFormField={setFormField}/>
-            <InputField name="address" setFormField={setFormField}/>
-            <InputField name="supply" setFormField={setFormField}/>
-            <InputField name="ecolink" setFormField={setFormField}/>
+            <InputField name="symbol" setFormField={setFormField} />
+            <InputField name="address" setFormField={setFormField} />
+            <InputField name="supply" setFormField={setFormField} />
+            <InputField name="ecolink" setFormField={setFormField} />
 
             <input type="button" name="previous" className="previous action-button" value="Previous" onClick={() => setCurrentFieldIndex(0)} />
             <input type="button" name="next" className="next action-button" value="Next" onClick={() => setCurrentFieldIndex(2)} />
@@ -221,9 +268,22 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Personal Details</h2>
             <h3 className="fs-subtitle">We will never sell it</h3>
-            <InputField name="email" setFormField={setFormField}/>
+            <InputField name="idoDate" setFormField={setFormField} />
+            <InputField name="start" setFormField={setFormField} />
+            <InputField name="ended" setFormField={setFormField} />
+
+            <legeng>3.4 Vesting Rule: </legeng>
+            <InputField name="vestingStart" setFormField={setFormField} />% at TGE, then linear unclock during next
+            <InputField name="vestingMonth" setFormField={setFormField} /> month on
+            <InputField name="vestingDate" setFormField={setFormField} /> (day)
+
+            <InputField name="idoPrice" setFormField={setFormField} />
+            <InputField name="raise" setFormField={setFormField} />
+            <InputField name="marketcap" setFormField={setFormField} />
+            <InputField name="sale" setFormField={setFormField} />
+
             <input type="button" name="previous" className="previous action-button" value="Previous" onClick={() => setCurrentFieldIndex(1)} />
-            <input type="submit" name="submit" className="submit action-button" value="Submit" onClick={submitData}/>
+            <input type="submit" name="submit" className="submit action-button" value="Submit" onClick={submitData} />
           </fieldset>
         </div>
 

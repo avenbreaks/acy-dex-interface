@@ -238,7 +238,7 @@ const ERROR_INFOS = {
 
   //2
   symbol: "Please enter your Token Symbol", //2.1
-  address:  "Please enter your Token Contract Address", //2.2
+  address: "Please enter your Token Contract Address", //2.2
   supply: "Please enter your Token Supply", //2.3
   ecolink: "Please enter your Token Econimics Link",//2.4
 
@@ -262,7 +262,7 @@ const ERROR_INFOS = {
 
 // COMPONENTS
 const InputField = ({
-  type = "text",
+  type,
   name,
   setFormField
 }) => {
@@ -286,13 +286,28 @@ const InputField = ({
     setFormField(name, value);
   }
 
+  if (type === "area") {
+    return (
+      <div>
+        {isError &&
+          <div className="error-info">{ERROR_INFOS[name]}</div>
+        }
+        <textarea
+          //type={"text"}
+          placeholder={PLACE_HOLDERS[name]}
+          onChange={onChangeField}
+          onBlur={onBlurField}
+        />
+      </div>
+    )
+      }
   return (
     <div>
       {isError &&
         <div className="error-info">{ERROR_INFOS[name]}</div>
       }
       <input
-        type={type}
+        type={"text"}
         placeholder={PLACE_HOLDERS[name]}
         onChange={onChangeField}
         onBlur={onBlurField}
@@ -306,6 +321,7 @@ const ApplicationForm = () => {
   // STATES
   const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM);
+  const [currentprogressbar, setprogressbar] = useState();
 
   // HOOKS
   useEffect(() => {
@@ -331,7 +347,7 @@ const ApplicationForm = () => {
   const ProgressBar = () => {
     return (
       <ul id="progressbar">
-        <li className="active"type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
+        <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
         <li type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
         <li type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
       </ul>
@@ -353,7 +369,7 @@ const ApplicationForm = () => {
             <InputField name="email" setFormField={setFormField} />
             <InputField name="websiteURL" setFormField={setFormField} />
             <InputField name="logoURL" setFormField={setFormField} />
-            <InputField name="description" setFormField={setFormField} />
+            <InputField name="description" setFormField={setFormField} type="area" />
             <InputField name="category" setFormField={setFormField} />
             <InputField name="projectIn" setFormField={setFormField} />
 

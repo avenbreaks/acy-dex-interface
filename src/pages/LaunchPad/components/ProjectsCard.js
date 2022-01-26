@@ -5,18 +5,17 @@ import AcyIcon from '@/assets/icon_acy.svg';
 import PaycerIcon from '@/assets/icon_paycer_logo.svg';
 import CountDown from './CountDown.js';
 
-const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngoing, isUpcoming, tokenLogoUrl }) => {
+const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngoing, isUpcoming, isPending, tokenLogoUrl }) => {
   console.log(ddl);
   let saleString = 'IDO Date: ' + start
   const history = useHistory();
-  const onOpenProjectDetail = (p) => {
-    history.push(`/launchpad/project/${p}`);
+  const onOpenProjectDetail = (p, isPending) => {
+    isPending ? history.push(`/launchpad/Pending/project/${p}`) : history.push(`/launchpad/project/${p}`)
 
-    
   };
 
   return (
-    <div className="projects-card projects-container" onClick={() => onOpenProjectDetail(projectID)}>
+    <div className="projects-card projects-container" onClick={() => onOpenProjectDetail(projectID, isPending)}>
       <div className="logo-countdown-container">
         <div className="logo-container">
           <div className="logo">
@@ -26,13 +25,13 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
         </div>
         <div className="countdown-container">
           <div>
-          {/* {isOngoing || isUpcoming ?<CountDown ddl={start} /> : <CountDown ddl={null} /> } */}
-          { <CountDown ddl={start} / >
-}
-           </div>
+            {/* {isOngoing || isUpcoming ?<CountDown ddl={start} /> : <CountDown ddl={null} /> } */}
+            {<CountDown ddl={start} />
+            }
+          </div>
 
           <div>
-            <p style={{ fontSize:'12px', color:'#fff' }}>{saleString}</p>
+            <p style={{ fontSize: '12px', color: '#fff' }}>{saleString}</p>
           </div>
         </div>
       </div>
@@ -46,8 +45,8 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
             padding: '0 20px 0 10px',
           }}
         >
-          <span style={{color:'#fff', marginLeft:'1rem'}}>Raise</span>
-          <span style={{color:'#fff', marginRight:'0.5rem'}}>{raise}</span>
+          <span style={{ color: '#fff', marginLeft: '1rem' }}>Raise</span>
+          <span style={{ color: '#fff', marginRight: '0.5rem' }}>{raise}</span>
         </div>
         <div
           style={{
@@ -57,8 +56,8 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
             padding: '0 20px 0 10px',
           }}
         >
-          <span style={{color:'#fff', marginLeft:'1rem'}}>Sales</span>
-          <span style={{color:'#fff', marginRight:'0.5rem'}}>{sales}</span>
+          <span style={{ color: '#fff', marginLeft: '1rem' }}>Sales</span>
+          <span style={{ color: '#fff', marginRight: '0.5rem' }}>{sales}</span>
         </div>
         <div
           style={{
@@ -68,8 +67,8 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
             padding: '0 20px 0 10px',
           }}
         >
-          <span style={{color:'#fff', marginLeft:'1rem'}}>Rate</span>
-          <span style={{color:'#fff', marginRight:'0.5rem'}}>{rate}</span>
+          <span style={{ color: '#fff', marginLeft: '1rem' }}>Rate</span>
+          <span style={{ color: '#fff', marginRight: '0.5rem' }}>{rate}</span>
         </div>
       </div>
     </div>

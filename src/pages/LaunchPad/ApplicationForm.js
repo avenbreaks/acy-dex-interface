@@ -345,13 +345,38 @@ const ApplicationForm = () => {
 
   // COMPONENTS
   const ProgressBar = () => {
-    return (
-      <ul id="progressbar">
-        <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
-        <li type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
-        <li type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
-      </ul>
-    )
+
+    if (currentFieldIndex === 2)
+    {
+      return (
+        <ul id="progressbar">
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
+        </ul>
+      )
+
+    }
+    else if (currentFieldIndex === 1) {
+      return (
+        <ul id="progressbar">
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
+          <li type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
+        </ul>
+      )
+    }
+    else
+    {
+      return (
+        <ul id="progressbar">
+          <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
+          <li type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
+          <li type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
+        </ul>
+      ) //style={{className: currentFieldIndex === 2 ? 'active' : 'active' }} 
+    }
+    
   }
 
   return (

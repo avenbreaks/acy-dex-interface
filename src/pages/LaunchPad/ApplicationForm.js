@@ -84,17 +84,134 @@ const PLACE_HOLDERS = {
 }
 
 const VALIDATION_FUNCTIONS = {
-  email: (value) => {
-    if (value !== 'a') return false;
-
-    return true;
-  },
-
+  //1
   username: (value) => {
     if (value.trim() === "") return false;
 
     return true;
   },
+  projectname: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  email: (value) => {
+    if (value !== 'a') return false;
+
+    return true;
+  },
+  websiteURL: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  logoURL: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  description: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  category: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  projectIn: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+
+  whitepaperLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  githubLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  telegramLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  twitterLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  linkedinLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  discordLINK: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+
+  //2
+  symbol: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  address: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  supply: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  ecolink: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+
+  //3
+  idoDate: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  start: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  ended: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+
+  vestingStart: '',
+  vestingMonth: '',
+  vestingDate: '',
+
+  idoPrice: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  raise: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  marketcap: '',
+  sale: '',
 }
 
 const ERROR_INFOS = {
@@ -158,6 +275,7 @@ const InputField = ({
       if (!VALIDATION_FUNCTIONS[name](value)) {
         setIsError(true);
       } else {
+
         setIsError(false);
       }
     }
@@ -213,9 +331,9 @@ const ApplicationForm = () => {
   const ProgressBar = () => {
     return (
       <ul id="progressbar">
-        <li className="active">Project</li>
-        <li>Token</li>
-        <li>IDO</li>
+        <li className="active"type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
+        <li type="button" onClick={() => setCurrentFieldIndex(1)} >Token</li>
+        <li type="button" onClick={() => setCurrentFieldIndex(2)}>IDO</li>
       </ul>
     )
   }

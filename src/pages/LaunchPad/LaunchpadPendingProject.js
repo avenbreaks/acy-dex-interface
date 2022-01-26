@@ -54,31 +54,6 @@ const LaunchpadProject = () => {
     const { projectId } = useParams();
     const [receivedData, setReceivedData] = useState({});
     const [mainCoinLogoURI, setMainCoinLogoURI] = useState(null);
-    const [poolID, setPoolID] = useState(null);
-    const [poolBaseData, setPoolBaseData] = useState(null);
-    // const [poolDistributionDate, setDistributionDate] = useState([]);
-    // const [poolDistributionStage, setpoolDistributionStage] = useState([]);
-    // const [poolStageCount, setpoolStageCount] = useState(0);
-    // const [poolStatus, setPoolStatus] = useState(0);
-    // const [poolTokenDecimals, setPoolTokenDecimals] = useState(0);
-    // const [poolMainCoinDecimals, setPoolMainCoinDecimals] = useState(0); // Gary: decimal initialize to 0
-    // const [poolMainCoinAddress, setPoolMainCoinAddress] = useState(0); // e.g., USDT
-    // const [poolMainCoinLogoURL, setPoolMainCoinLogoURL] = useState(null);
-    // const [poolMainCoinName, setPoolMainCoinName] = useState(null);
-    // const [isError, setIsError] = useState(false);
-    // const [allocationInfo, setAllocationInfo] = useState({});
-    // const [hasCollected, setHasCollected] = useState(false);
-    // const [successCollect, setSuccessCollect] = useState(false);
-    // const [notVesting, setNotVesting] = useState(false);
-    // const [isVesting, setIsVesting] = useState(false);
-    // const [isNotInvesting, setIsNotInvesting] = useState(false);
-    // const [compareAlloDate, setCompareAlloDate] = useState(false);
-    // const [comparesaleDate, setComparesaleDate] = useState(false);
-    // const [comparevestDate, setComparevestDate] = useState(false);
-    // const [isClickedVesting, setIsClickedVesting] = useState(false);
-    // const [isClickedMax, setIsClickedMax] = useState(false);
-    // const [investorNum,setinvestorNum] = useState(0);
-    // const [isInvesting, setIsInvesting] = useState(false);
 
     // CONSTANTS
     const InputGroup = Input.Group;
@@ -101,10 +76,10 @@ const LaunchpadProject = () => {
 
 
     // FUNCTIONS
-    // const connectWallet = async () => {
-    //     activate(binance);
-    //     activate(injected);
-    // };
+    const connectWallet = async () => {
+        activate(binance);
+        activate(injected);
+    };
 
     const clickToWebsite = () => {
         const newWindow = window.open(receivedData.social[0].Website, '_blank', 'noopener,noreferrer');
@@ -123,64 +98,6 @@ const LaunchpadProject = () => {
         return res
     }
 
-    // contract function
-    // const getPoolData = async (lib, acc) => {
-    //     const poolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, lib, acc);
-    //     const pool = []
-    //     const distributionRes = []
-    //     const distributionStage = []
-
-    //     // 合约函数调用
-    //     const baseData = await poolContract.GetPoolBaseData(poolID)
-    //     const distributionData = await poolContract.GetPoolDistributionData(poolID)
-    //     const status = await poolContract.GetPoolStatus(poolID)
-
-    //     // getpoolbasedata 数据解析
-    //     const token2Address = baseData[1]
-    //     const tokenList = TOKEN_LIST()
-    //     const token2Info = tokenList.find(item => item.address == token2Address)
-
-    //     const token1contract = getContract(baseData[0], ERC20ABI, lib, acc)
-    //     const token2contract = getContract(token2Address, ERC20ABI, lib, acc)
-
-    //     const token1decimal = await token1contract.decimals()
-    //     const token2decimal = await token2contract.decimals()
-    //     // 不解析时间戳
-    //     const res1 = BigNumber.from(baseData[2]).toBigInt().toString().slice(0, -(token1decimal)) // 获取销售的token的总数
-    //     const res2 = BigNumber.from(baseData[3]).toBigInt().toString().slice(0, -(token1decimal)) // 已销售的token的数量
-    //     const res3 = BigNumber.from(baseData[4]).toBigInt()
-    //     const res4 = BigNumber.from(baseData[5]).toBigInt()
-
-    //     // 获取当前阶段
-    //     const d = Math.round(new Date().getTime() / 1000)
-    //     if (d > res3) setComparesaleDate(true)
-    //     if (d > res4) setComparevestDate(true)
-    //     const saleStartDate = convertUnixTime(res3)
-    //     const saleEndDate = convertUnixTime(res4)
-    //     // 存放数据
-    //     pool.push(res1, res2, saleStartDate, saleEndDate)
-    //     // getpooldistributiondata 数据解析以及存放
-    //     distributionData[1].map(uTime => distributionRes.push(convertUnixTime(uTime)))
-    //     distributionData[2].map(vestingRate => distributionStage.push(BigNumber.from(vestingRate).toBigInt().toString()))
-
-    //     // 判断当前是否是vesting阶段
-    //     const curPoolStatus = Number(BigNumber.from(status).toBigInt())
-    //     if (curPoolStatus === 4) setIsVesting(true)
-
-    //     // set数据
-    //     setPoolBaseData(pool)
-    //     setDistributionDate(distributionRes)
-    //     setpoolStageCount(Number(BigNumber.from(distributionData[0]).toBigInt())) // vesting阶段的次数
-    //     setpoolDistributionStage(distributionStage)
-    //     setPoolStatus(curPoolStatus)
-    //     setPoolStatus(Number(BigNumber.from(status).toBigInt()))
-    //     setPoolMainCoinAddress(token2Address)
-    //     setPoolTokenDecimals(token1decimal)
-    //     setPoolMainCoinDecimals(token2decimal)
-    //     // setMainCoinLogoURI(token2Info.logoURI)
-    //     console.log(token2Address)
-    // }
-
     // HOOKS
     // Retrieve project data from db
     useEffect(() => {
@@ -193,15 +110,15 @@ const LaunchpadProject = () => {
 
                     res['tokenLabels'] = contextData['tokenLabels'];
                     res['projectDescription'] = contextData['projectDescription'];
-                    // res['alreadySale'] = contextData['alreadySale'];
-                    // res['salePercentage'] = contextData['salePercentage'];
+                    res['alreadySale'] = contextData['alreadySale'];
+                    res['salePercentage'] = contextData['salePercentage'];
                     res['posterUrl'] = contextData['posterUrl'];
                     res['tokenLogoUrl'] = res.basicInfo.projectTokenUrl;
 
-                    // res['regStart'] = formatTime(res.scheduleInfo.regStart);
-                    // res['regEnd'] = formatTime(res.scheduleInfo.regEnd);
-                    // res['saleStart'] = formatTime(res.scheduleInfo.saleStart);
-                    // res['saleEnd'] = formatTime(res.scheduleInfo.saleEnd);
+                    res['regStart'] = formatTime(res.scheduleInfo.regStart);
+                    res['regEnd'] = formatTime(res.scheduleInfo.regEnd);
+                    res['saleStart'] = formatTime(res.scheduleInfo.saleStart);
+                    res['saleEnd'] = formatTime(res.scheduleInfo.saleEnd);
 
                     res['tokenPrice'] = res.saleInfo.tokenPrice
                     res['totalSale'] = res.saleInfo.totalSale;
@@ -218,8 +135,8 @@ const LaunchpadProject = () => {
                     // if (curT < res.scheduleInfo.saleStart) setCompareAlloDate(true)
                     const mainCoinInfo = TOKEN_LIST().find(item => item.symbol == res.basicInfo.mainCoin)
                     setMainCoinLogoURI(mainCoinInfo.logoURI);
-                    setPoolID(res.basicInfo.poolID);
                     setReceivedData(res);
+                    console.log("fecthing project info ------------222", res)
                 } else {
                     console.log('redirect to list page');
                     history.push('/launchpad');
@@ -231,24 +148,6 @@ const LaunchpadProject = () => {
                 history.push('/launchpad');
             });
     }, [library, account]);
-
-    // // fetching data from Smart Contract
-    // useEffect(async () => {
-    //     if (!account) {
-    //         connectWallet();
-    //     }
-
-    //     // project must have poolID
-    //     if (!poolID) return;
-
-    //     if (account && library) {
-    //         getPoolData(library, account)
-    //     } else {
-    //         const provider = new JsonRpcProvider(LAUNCH_RPC_URL(), CHAINID());  // different RPC for mainnet
-    //         const accnt = "0x0000000000000000000000000000000000000000";
-    //         // await getPoolData(provider, accnt)
-    //     }
-    // }, [library, account, poolID])
 
 
     // COMPONENTS
@@ -322,8 +221,8 @@ const LaunchpadProject = () => {
                         <div>
                             <p>Sale (FCFS)</p>
                             <div>
-                                <p className="shortText">From :</p>
-                                <p className="shortText">To : </p>
+                                <p className="shortText">From : {/*receivedData.saleStart*/}</p>
+                                <p className="shortText">To : {/*receivedData.saleEnd*/}</p>
                             </div>
                         </div>
 
@@ -341,28 +240,41 @@ const LaunchpadProject = () => {
             );
         };
 
+
+
+        return (
+            <div
+                className="circleBorderCard"
+                style={{
+                    padding: 0,
+                }}
+            >
+                <Procedure />
+            </div>
+        );
     };
+
     const KeyInformation = ({ projectToken, totalSale, tokenPrice }) => {
         return (
             <div className="circleBorderCard cardContent">
                 <div className="keyinfoRow">
                     <div className="keyinfoName">Total Sales</div>
                     <div>
-                        {/* {totalSale} {projectToken} */}
+                        {totalSale} {projectToken}
                     </div>
                 </div>
 
                 <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
                     <div className="keyinfoName">Total Raise</div>
                     <div>
-                        {/* {receivedData.totalRaise} {receivedData.mainCoin} */}
+                        {receivedData.totalRaise} {receivedData.mainCoin}
                     </div>
                 </div>
 
                 <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
                     <div className="keyinfoName">Rate</div>
                     <div>
-                        {/* 1 {projectToken} = {tokenPrice} {receivedData.mainCoin} */}
+                        1 {projectToken} = {tokenPrice} {receivedData.mainCoin}
                     </div>
                 </div>
             </div>
@@ -410,7 +322,6 @@ const LaunchpadProject = () => {
         );
     };
 
-
     const Allocation = () => {
 
         const colorCodes = ["#C6224E", "#1E5D91", "#E29227", "#1C9965", "#70BA33"];
@@ -418,23 +329,22 @@ const LaunchpadProject = () => {
 
         const AllocationCard = ({ index }) => {
 
-            // const computeCoverClass = () => {
-            //     let classString = 'cover';
-            //     let coverOpenState = coverOpenStates[index];
-            //     if (coverOpenState === 'open') {
-            //         classString += ' openCover';
-            //     } else if (coverOpenState === 'removed') {
-            //         classString = 'nocover';
-            //     }
-            //     return classString;
-            // };
-
+            const computeCoverClass = () => {
+                let classString = 'cover';
+                let coverOpenState = coverOpenStates[index];
+                if (coverOpenState === 'open') {
+                    classString += ' openCover';
+                } else if (coverOpenState === 'removed') {
+                    classString = 'nocover';
+                }
+                return classString;
+            };
 
             return (
                 <div className='allocationCard-container'>
                     <div className="allocationCard" style={{ backgroundColor: baseColorCodes[index] }}>
                         <div
-                            className={"cover"}
+                            className={'cover'}
                             style={{ backgroundColor: colorCodes[index] }}
                         >
                         </div>
@@ -449,6 +359,7 @@ const LaunchpadProject = () => {
                 cards.push(
                     <AllocationCard
                         index={i}
+                        coverOpenState={'cover'}
                     />
                 );
             }
@@ -474,7 +385,6 @@ const LaunchpadProject = () => {
                 </div>
             )
         }
-
 
         return (
             <div>
@@ -507,6 +417,7 @@ const LaunchpadProject = () => {
                             <InputGroup>
                                 <Input
                                     className="sales-input"
+                                    value={"0"}
                                 />
                                 <div className="unit-max-group">
                                     <div className="token-logo">
@@ -524,24 +435,28 @@ const LaunchpadProject = () => {
                         </Button>
                     </form>
 
-                    {poolDistributionStage = false && poolDistributionDate &&
-                        <div className="vesting-open-container">
-                            <div className="vesting-container">
-                                <p className="sale-vesting-title vesting">Vesting</p>
-                                <div className="text-line-container">
-                                    <p>Unlock 0% at TGE, 0 stages of vesting : </p>
-                                    <span className="vesting-line" />
 
-                                </div>
-                                <div className="arrow-down-container">
-                                    <CaretDownOutlined
-                                        className={'arrow-down-inactive arrow-down'}
-                                    />
-                                </div>
-                                <div className='vesting-trigger-container'></div>
+                    <div className="vesting-open-container">
+                        <div className="vesting-container">
+                            <p className="sale-vesting-title vesting">Vesting</p>
+                            <div className="text-line-container">
+                                <p>Unlock 0% at TGE, 0 stages of vesting : </p>
+                                <span className="vesting-line" />
+
                             </div>
+                            <div className="arrow-down-container">
+                                <CaretDownOutlined
+                                    className={'arrow-down-inactive arrow-down'}
+                                />
+                            </div>
+                            <div className='vesting-trigger-container'></div>
                         </div>
-                    }
+                        <div
+                            className={'vesting-schedule'}
+                        >
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -553,10 +468,10 @@ const LaunchpadProject = () => {
             <div className="gridContainer">
                 <div className="leftGrid">
                     <TokenProcedure />
-                    {poolBaseData &&
+                    {true &&
                         <KeyInformation
                             projectToken={receivedData.projectToken}
-                            totalSale={poolBaseData[0]}
+                            totalSale={receivedData.totalSale}
                             tokenPrice={receivedData.tokenPrice}
                         />
                     }
@@ -575,6 +490,7 @@ const LaunchpadProject = () => {
     return (
         <div>
             <div className="mainContainer">
+
                 <TokenBanner posterUrl={receivedData.posterUrl} />
                 <TokenLogoLabel
                     projectName={receivedData.projectName}
@@ -586,4 +502,4 @@ const LaunchpadProject = () => {
     );
 };
 
-export default LaunchpadPendingProject;
+export default LaunchpadProject;

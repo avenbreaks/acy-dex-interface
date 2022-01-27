@@ -78,7 +78,7 @@ export default [
             component: './LaunchPad/LaunchpadProject',
           },
           {
-            path: '/launchpad/Pending/project/:projectId',
+            path: '/launchpad/pending/project/:projectId',
             component: './LaunchPad/LaunchpadPendingProject',
           },
           {

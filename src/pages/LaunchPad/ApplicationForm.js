@@ -71,9 +71,9 @@ const PLACE_HOLDERS = {
   start: '3.2 Start Time',
   ended: '3.3 Ended Time',
 
-  vestingStart: 'fillBlank',
-  vestingMonth: 'fillBlank',
-  vestingDate: 'fillBlank',
+  vestingStart: '()',
+  vestingMonth: '(Month)',
+  vestingDate: '(Date)',
 
   idoPrice: '3.5 IDO Price',
   raise: '3.6 How much to raise?(USD)',
@@ -196,9 +196,21 @@ const VALIDATION_FUNCTIONS = {
     return true;
   },
 
-  vestingStart: '',
-  vestingMonth: '',
-  vestingDate: '',
+  vestingStart: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  vestingMonth: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
+  vestingDate: (value) => {
+    if (value.trim() === "") return false;
+
+    return true;
+  },
 
   idoPrice: (value) => {
     if (value.trim() === "") return false;
@@ -335,7 +347,29 @@ const ApplicationForm = () => {
     setFormData(newFormData);
   }
 
+  // const nextProgress = (fieldname, value) => {
+  //   const newFormData = Object.assign({}, formData);
+  //   newFormData[fieldname] = value;
+  //   setFormData(newFormData);
+  //   return (
+  //     <div>
+  //       {isError &&
+  //         <div className="error-info">{ERROR_INFOS[name]}</div>
+  //       }
+  //       <input
+  //         type={"text"}
+  //         placeholder={PLACE_HOLDERS[name]}
+  //         onChange={onChangeField}
+  //         onBlur={onBlurField}
+  //       />
+  //     </div>
+  //   )
+  // }
+
   const submitData = (e) => {
+
+    e.preventDefault();
+
     console.log(formData);
     // TODO: request to backend, register function in src/services/launch.js
     // look for example at the end of src/services/api.js

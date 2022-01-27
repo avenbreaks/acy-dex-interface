@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from "react"
 import './css/Form.css';
+import axios from 'axios';
+import { API_URL} from '@/constants';
+
 
 // CONSTANTS
 const INITIAL_FORM = {
@@ -374,6 +377,18 @@ const ApplicationForm = () => {
     // TODO: request to backend, register function in src/services/launch.js
     // look for example at the end of src/services/api.js
 
+    const obj = JSON.stringify(formData)
+    console.log("JSON:",obj);
+    const apiUrlPrefix = API_URL();
+    axios.post(
+      `${apiUrlPrefix}/launch/projects/apply`,obj
+    )
+      .then(data => {
+        console.log(data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
     e.preventDefault();
   }
 

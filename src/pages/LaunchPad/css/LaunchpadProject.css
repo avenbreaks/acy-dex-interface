@@ -16,9 +16,29 @@
 
 .flexContainer {
   display: flex;
+  flex-direction:row;
   margin-top: 2.5rem;
 }
 
+.flexContainer.EditButton{
+  display: flex;
+  /* justify-content: right;
+  float: right; */
+  margin-left: auto;
+  margin-top: 0;
+  background:#EB5C20;
+  border-radius:30px;
+  padding-top: 30px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 30px;
+  height: 30px;
+  flex-basis: 70px;
+  cursor: pointer;
+}
+.flexContainer.EditButton:hover{
+  background-color: rgb(5, 7, 128);
+}
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

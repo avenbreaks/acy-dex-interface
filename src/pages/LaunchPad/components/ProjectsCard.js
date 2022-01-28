@@ -10,7 +10,7 @@ const ProjectsCard = ({ projectID, start, ddl, raise, sales, rate, title, isOngo
   let saleString = 'IDO Date: ' + start
   const history = useHistory();
   const onOpenProjectDetail = (p, isPending) => {
-    isPending ? history.push(`/launchpad/Pending/project/${p}`) : history.push(`/launchpad/project/${p}`)
+    isPending ? history.push(`/launchpad/pending/project/${p}`) : history.push(`/launchpad/project/${p}`)
 
   };
 

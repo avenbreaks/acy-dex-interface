@@ -416,11 +416,11 @@ const ApplicationForm = () => {
     // TODO: request to backend, register function in src/services/launch.js
     // look for example at the end of src/services/api.js
 
-    const obj = JSON.stringify(formData)
-    console.log("JSON:",obj);
-    const apiUrlPrefix = API_URL();
+    // `${apiUrlPrefix}/applyForm/createForm/walletId=${account}`,obj
+
+    // const apiUrlPrefix = API_URL();
     axios.post(
-      `${apiUrlPrefix}/applyForm/createForm/walletId=${account}`,obj
+      `http://localhost:3001/bsc-test/api/applyForm/createForm?walletId=${account}`,formData
     )
       .then(data => {
         console.log(data);

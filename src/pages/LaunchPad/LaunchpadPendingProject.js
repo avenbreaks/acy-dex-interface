@@ -42,6 +42,7 @@ import { getContract } from "../../acy-dex-swap/utils/index.js"
 import { useWeb3React } from '@web3-react/core';
 import { useConnectWallet } from "@/components/ConnectWallet";
 import POOLABI from "@/acy-dex-swap/abis/AcyV1Poolz.json";
+import EditButton from './components/EditButton'
 
 import { useConstantLoader, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST } from "@/constants";
 
@@ -72,14 +73,6 @@ const LaunchpadProject = () => {
         "Polyaddress": polyIcon,
         "Bscaddress": bscIcon
     }
-    const PoolContract = getContract(LAUNCHPAD_ADDRESS(), POOLABI, library, account);
-
-
-    // FUNCTIONS
-    const connectWallet = async () => {
-        activate(binance);
-        activate(injected);
-    };
 
     const clickToWebsite = () => {
         const newWindow = window.open(receivedData.social[0].Website, '_blank', 'noopener,noreferrer');
@@ -163,7 +156,7 @@ const LaunchpadProject = () => {
 
     const TokenLogoLabel = ({ projectName, tokenLogo }) => {
         return (
-            <div className="flexContainer">
+            <div className="flexContainer" >
                 <img
                     className="tokenLogo"
                     alt=""
@@ -193,7 +186,12 @@ const LaunchpadProject = () => {
                         }
                     </div>
                 </div>
+                <div className="flexContainer EditButton">
+                    <EditButton />
+                </div>
+
             </div>
+
         );
     };
 
@@ -221,8 +219,8 @@ const LaunchpadProject = () => {
                         <div>
                             <p>Sale (FCFS)</p>
                             <div>
-                                <p className="shortText">From : {/*receivedData.saleStart*/}</p>
-                                <p className="shortText">To : {/*receivedData.saleEnd*/}</p>
+                                <p className="shortText">From : {receivedData.saleStart}</p>
+                                <p className="shortText">To : {receivedData.saleEnd}</p>
                             </div>
                         </div>
 

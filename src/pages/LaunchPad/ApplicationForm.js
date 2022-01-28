@@ -96,7 +96,7 @@ const VALIDATION_FUNCTIONS = {
     return true;
   },
   email: (value) => {
-    if (value !== 'a') return false;
+    if (value.trim() === "") return false;
 
     return true;
   },
@@ -313,6 +313,21 @@ const InputField = ({
       </div>
     )
       }
+      else if (type === "s") {
+        return (
+          <div>
+            {isError &&
+              <div className="error-info">{ERROR_INFOS[name]}</div>
+            }
+            <li
+              //type={"text"}
+              placeholder={PLACE_HOLDERS[name]}
+              onChange={onChangeField}
+              onBlur={onBlurField}
+            />
+          </div>
+        )
+      }
   return (
     <div>
       {isError &&
@@ -329,6 +344,7 @@ const InputField = ({
 }
 
 const ApplicationForm = () => {
+  //const name,
 
   // STATES
   const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
@@ -347,24 +363,38 @@ const ApplicationForm = () => {
     setFormData(newFormData);
   }
 
-  // const nextProgress = (fieldname, value) => {
-  //   const newFormData = Object.assign({}, formData);
-  //   newFormData[fieldname] = value;
-  //   setFormData(newFormData);
+  // const nextProgress = (num) => {
+
+  //   const value = e.target.value;
+  //   setFormField(name, value);
+
+  //     const value = e.target.value;
+  //     if (name in VALIDATION_FUNCTIONS) {
+  //       if (!VALIDATION_FUNCTIONS[name](value)) {
+  //         setIsError(true);
+  //       } else {
+  
+  //         setIsError(false);
+  //       }
+  //     }
+  //   }
+  
+  //   const onBlurField = (e) => {
+  //     const value = e.target.value;
+  //     setFormField(name, value);
+
   //   return (
   //     <div>
   //       {isError &&
   //         <div className="error-info">{ERROR_INFOS[name]}</div>
   //       }
-  //       <input
-  //         type={"text"}
-  //         placeholder={PLACE_HOLDERS[name]}
+        
   //         onChange={onChangeField}
   //         onBlur={onBlurField}
-  //       />
+        
   //     </div>
   //   )
-  // }
+  //}
 
   const submitData = (e) => {
 
@@ -466,9 +496,9 @@ const ApplicationForm = () => {
             <InputField name="ended" setFormField={setFormField} />
 
             <legeng>3.4 Vesting Rule: </legeng>
-            <InputField name="vestingStart" setFormField={setFormField} />% at TGE, then linear unclock during next
-            <InputField name="vestingMonth" setFormField={setFormField} /> month on
-            <InputField name="vestingDate" setFormField={setFormField} /> (day)
+            <InputField type="s" className="fillBlank" name="vestingStart" setFormField={setFormField} />% at TGE, then linear unclock during next
+            <InputField className="fillBlank" name="vestingMonth" setFormField={setFormField} /> month on
+            <InputField className="fillBlank" name="vestingDate" setFormField={setFormField} /> (day)
 
             <InputField name="idoPrice" setFormField={setFormField} />
             <InputField name="raise" setFormField={setFormField} />

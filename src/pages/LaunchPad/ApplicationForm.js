@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import './css/Form.css';
 import axios from 'axios';
 import { API_URL} from '@/constants';
-
+import { useConstantLoader } from '@/constants';
 
 // CONSTANTS
 const INITIAL_FORM = {
@@ -338,10 +338,19 @@ const ApplicationForm = () => {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [currentprogressbar, setprogressbar] = useState();
 
+  const { account, chainId, library } = useConstantLoader();
+
   // HOOKS
+  useEffect(()=>{
+    console.log("User Check====101====:",account);
+    if(account == undefined){
+      alert("Please Return to the launch Page connect your wallet befor you apply for IDO!!!");
+    }
+  },[account]);
+
   useEffect(() => {
     console.log('formdata', formData);
-  }, [formData])
+  }, [formData]);
 
   // FUNCTIONS
   const setFormField = (fieldname, value) => {
@@ -381,7 +390,7 @@ const ApplicationForm = () => {
     console.log("JSON:",obj);
     const apiUrlPrefix = API_URL();
     axios.post(
-      `${apiUrlPrefix}/launch/projects/apply`,obj
+      `${apiUrlPrefix}/applyForm/createForm/walletId=${account}`,obj
     )
       .then(data => {
         console.log(data);

@@ -57,4 +57,19 @@ const getTransferData = async () =>
     return [transferData,chartData];
 };
 
-export {getTransferData};
+// Whilelist
+const getWhileList=async()=>{
+
+}
+
+// Sale
+const getSaleList=async()=>{
+
+}
+
+// launchCharts
+const getLaunchCharts=async()=>{
+
+}
+
+export {getTransferData,getWhileList,getSaleList,getLaunchCharts};

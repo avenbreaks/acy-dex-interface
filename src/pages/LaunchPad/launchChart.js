@@ -96,7 +96,6 @@ class launchChart extends Component {
   getOption = () => {
     // 组装数据，返回配置 option
     const { imgType, xtitle, data } = this.state;
-
     let chartData = this.props.data;
     if (!this.props.data) {
       chartData = defaultData;
@@ -141,8 +140,19 @@ class launchChart extends Component {
       },
       series: [
         {
+          data: valueList,
           type: 'bar',
-          data: valueList
+          // symbol: 'none', //去掉折线图中的节点
+          smooth: 1, //true 为平滑曲线，false为直线
+          showSymbol: false, //是否默认展示圆点
+          // symbol: 'image://data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7',     //设定为实心点
+          // symbolSize: 2,   //设定实心点的大小
+          itemStyle: {
+            normal: {
+              color: this.props.barColor || '#1c9965',
+              width: 2,
+            },
+          },
         },
         {
           data: valueList,

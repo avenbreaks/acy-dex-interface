@@ -5,7 +5,7 @@ import { Progress, Button, Table, Input, Tooltip, Icon, Alert } from 'antd';
 import { history } from 'umi';
 import styles from "./styles.less"
 import LaunchChart from './launchChart';
-import { getTransferData } from '@/acy-dex-swap/core/launchPad';
+import { getTransferData,getSaleList,getLaunchCharts } from '@/acy-dex-swap/core/launchPad';
 import { requireAllocation, getAllocationInfo, getProjectInfo, useAllocation } from '@/services/api';
 import { BigNumber } from '@ethersproject/bignumber';
 import ERC20ABI from '@/abis/ERC20.json';
@@ -176,6 +176,7 @@ const CardArea = ({
         <ProjectDescription receivedData={receivedData} />
         {/* { !comparesaleDate || compareAlloDate ? "" : <ChartCard className="launchpad-chart" /> } */}
         <ChartCard className="launchpad-chart"
+        poolID={poolID}
          account={account}
             library={library}
              />
@@ -399,7 +400,7 @@ const ProjectDescription = ({ receivedData }) => {
 };
 
 const ChartCard = ( { account,
-  library}
+  library,poolID}
   ) => {
   const [chartData, setChartData] = useState([]);
   const [transferData, setTransferData] = useState([]);
@@ -464,14 +465,9 @@ const ChartCard = ( { account,
 
     // newChartData.splice(0, newChartData.length - recordNum);
     // setTransferData(newTransferData);
-    setChartData([['2000-06-05', 116],
-    ['2000-06-06', 129],
-    ['2000-06-07', 135],
-    ['2000-06-08', 86],
-    ['2000-06-09', 73],
-    ['2000-06-10', 85],
-    ['2000-06-11', 73],
-    ['2000-06-12', 68]]);
+
+    getLaunchCharts(poolID).then(res=>setChartData(res));
+    getSaleList(poolID).then(res=>setTransferData(res));
   }, []);
 
   return (
@@ -1071,7 +1067,6 @@ const LaunchpadProject = () => {
           const mainCoinInfo = TOKEN_LIST().find(item => item.symbol == res.basicInfo.mainCoin)
           setMainCoinLogoURI(mainCoinInfo.logoURI);
           setPoolID(res.basicInfo.poolID);
-
           console.log('res', res);
           setReceivedData(res);
         } else {

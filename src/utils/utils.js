@@ -255,3 +255,11 @@ export function  uniqueFun(arr,type)
    const res = new Map();
    return arr.filter((a)=>!res.has(a[type])&& res.set(a[type],1));
 } 
+
+export function getTIMESTAMP(time) {
+  const date = new Date(time);
+  const hour = ("0" + date.getHours(time)).substr(-2);
+  const minutes = ("0" + date.getMinutes(time)).substr(-2);
+  const seconds = ("0" + date.getSeconds(time)).substr(-2);
+  return hour + ":" + minutes + ":" + seconds;
+}

@@ -16,6 +16,8 @@ import ExpandingContent from './components/ExpandedContent';
 import { useConnectWallet } from '@/components/ConnectWallet';
 import { useWeb3React } from '@web3-react/core';
 import { API_URL } from '@/constants'
+import axios from 'axios';
+
 
 const { Meta } = Card;
 
@@ -48,22 +50,33 @@ const Pool = props => {
 
 
   // project variables
-  useEffect(() => {
+  useEffect(async () => {
     console.log("api url", API_URL())
+    let result = await axios.get(`http://localhost:3001/bsc-test/api/applyForm/getForm`)
+    console.log("result.data= ", result.data)
+    console.log("result= ", result)
+    const newPendingData = [];
+    result.data.forEach(obj => {
+      console.log("form=", obj);
+      newPendingData.push(obj)
+    });
+    console.log("pre pending project= ", newPendingData)
+    setPendingData([...newPendingData]);
+    console.log("pending data=", pendingData);
+
     getProjects(API_URL())
       .then(res => {
         if (res) {
           const newOngoingData = [];
           const newUpcomingData = [];
           const newEndedData = [];
-          const newPendingData = [];
           // get all projects from db
           res.forEach(obj => {
             console.log(obj);
             if (obj.projectStatus === 'Ongoing') newOngoingData.push(obj);
             else if (obj.projectStatus === 'Upcoming') newUpcomingData.push(obj);
             else if (obj.projectStatus === 'Ended') newEndedData.push(obj);
-            else if (obj.projectStatus === 'Pending') newPendingData.push(obj);
+
           }
             // obj.projectStatus === 'Ongoing'
             //   ? newOngoingData.push(obj)
@@ -75,7 +88,7 @@ const Pool = props => {
           setOngoingData([...newOngoingData]);
           setUpcomingData([...newUpcomingData]);
           setEndedData([...newEndedData]);
-          setPendingData([...newPendingData]);
+
         } else {
           console.log('Failed to retrieve data from database');
         }
@@ -168,7 +181,7 @@ const Pool = props => {
               <div className={styles.lineSeperator} />
             </div>
             {<div className={styles.projectsContainer}>
-              <PendingProjects data={endedData} />
+              <PendingProjects data={pendingData} />
             </div>}
           </div>
         </section>

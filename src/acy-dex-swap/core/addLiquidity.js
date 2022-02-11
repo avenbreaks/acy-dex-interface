@@ -83,13 +83,18 @@ export async function getEstimated(
 
     if (!account || !library) return new CustomError('Connect to your wallet');
     if (!inputToken0.symbol || !inputToken1.symbol) return new CustomError('Please choose tokens');
-    if (exactIn && inToken0Amount == '0') return new CustomError('Please enter amount');
-    if (!exactIn && inToken1Amount == '0') return new CustomError('Please enter amount');
-    if (exactIn && inToken0Amount == '') return new CustomError('Please enter amount');
-    if (!exactIn && inToken1Amount == '') return new CustomError('Please enter amount');
-    if (exactIn && isNaN(parseFloat(inToken0Amount))) return new CustomError('Please enter amount');
-    if (!exactIn && isNaN(parseFloat(inToken1Amount)))
+    if (exactIn && inToken0Amount == '0') { setToken1Amount(''); return new CustomError('Please enter amount'); }
+    if (!exactIn && inToken1Amount == '0') { setToken0Amount(''); return new CustomError('Please enter amount'); }
+    if (exactIn && inToken0Amount == '') { setToken1Amount(''); return new CustomError('Please enter amount'); }
+    if (!exactIn && inToken1Amount == '') { setToken0Amount(''); return new CustomError('Please enter amount'); }
+    if (exactIn && isNaN(parseFloat(inToken0Amount))) {
+      setToken1Amount('');
       return new CustomError('Please enter amount');
+    }
+    if (!exactIn && isNaN(parseFloat(inToken1Amount))) {
+      setToken0Amount('');
+      return new CustomError('Please enter amount');
+    }
 
     // let token0IsETH = inToken0Symbol === 'ETH';
     // let token1IsETH = inToken1Symbol === 'ETH';

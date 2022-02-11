@@ -99,10 +99,22 @@ export async function swapGetEstimated(
 
     if (!account) return new CustomError('Connect to wallet');
     else if (!inputToken0.symbol || !inputToken1.symbol) return new CustomError('please choose tokens');
-    if (exactIn && parseFloat(inToken0Amount) == '0') return new CustomError('Enter an amount');
-    else if (!exactIn && parseFloat(inToken1Amount) == '0') return new CustomError('Enter an amount');
-    if (exactIn && inToken0Amount == '') return new CustomError('Enter an amount');
-    else if (!exactIn && inToken1Amount == '') return new CustomError('Enter an amount');
+    if (exactIn && parseFloat(inToken0Amount) == '0') {
+      setToken1Amount('');
+      return new CustomError('Enter an amount');
+    }
+    else if (!exactIn && parseFloat(inToken1Amount) == '0') {
+      setToken0Amount('');
+      return new CustomError('Enter an amount');
+    }
+    if (exactIn && inToken0Amount == '') {
+      setToken1Amount('');
+      return new CustomError('Enter an amount');
+    }
+    else if (!exactIn && inToken1Amount == '') {
+      setToken0Amount('');
+      return new CustomError('Enter an amount');
+    }
 
     console.log(`token0Amount: ${inToken0Amount}`);
     console.log(`token1Amount: ${inToken1Amount}`);

@@ -353,6 +353,7 @@ const ApplicationForm = () => {
   const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [currentprogressbar, setprogressbar] = useState();
+  const { projectId } = useParams();
 
   const { account, chainId, library } = useConstantLoader();
 
@@ -368,6 +369,10 @@ const ApplicationForm = () => {
     console.log('formdata', formData);
   }, [formData]);
 
+  //TODO : ZENGHUI GET FORM BY ID
+  useEffect(()=>{
+
+  },[projectId])
   // FUNCTIONS
   const setFormField = (fieldname, value) => {
     const newFormData = Object.assign({}, formData);
@@ -429,6 +434,9 @@ const ApplicationForm = () => {
         console.log(e);
       });
     e.preventDefault();
+
+      //TODO: ZENGHUI POST API updateForm(projectId)
+
   }
 
   // COMPONENTS
@@ -466,7 +474,6 @@ const ApplicationForm = () => {
     }
     
   }
-
   return (
     <div id="form-container">
 

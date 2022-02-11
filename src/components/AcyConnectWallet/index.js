@@ -15,8 +15,7 @@ import { Button, Icon, Tooltip } from 'antd';
 const AcyConnectWallet = props => {
 
   const { onClick, isMobile, chainId: walletChainId, pendingLength, ...rest } = props;
-  const { account, chainId: fallbackChainId, library } = useConstantLoader();
-  const { tokenList: INITIAL_TOKEN_LIST } = useConstantLoader();
+  const { account, chainId: fallbackChainId, library, tokenList: INITIAL_TOKEN_LIST } = useConstantLoader();
 
   const [userBalance, setUserBalance] = useState('0');
   const [tokenBalanceDict, setTokenBalanceDict] = useState({});
@@ -35,6 +34,7 @@ const AcyConnectWallet = props => {
 
   // 钱包余额
 
+  // step 2: get wallet token balance
   const initTokenBalanceDict = (tokenList) => {
     console.log('Init Token Balance!!!! with chainId, TokenList', fallbackChainId, tokenList);
     const newTokenBalanceDict = {};
@@ -57,23 +57,28 @@ const AcyConnectWallet = props => {
         newTokenBalanceDict[token.symbol] = balString;
         return balString;
       }).then(res => {
+        console.log("test newTokenBalanceDict", newTokenBalanceDict)
         setTokenBalanceDict(newTokenBalanceDict);
       })
     }
   }
-
+  // step 1: get token price
   const getAllPrice = async () => {
     const tokenPriceList = await getAllSuportedTokensPrice().then(res => {
       setTokenPriceDict(res);
     });
   }
-  useEffect(() => {
-    getAllPrice(library, account, fallbackChainId);
+
+  // trigger step 1 and 2
+  useEffect(async () => {
+    await getAllPrice(library, account, fallbackChainId);
     if (INITIAL_TOKEN_LIST) {
+      console.log("acy connect wallet tokenList", INITIAL_TOKEN_LIST)
       initTokenBalanceDict(INITIAL_TOKEN_LIST);
     }
   }, [account, fallbackChainId])
 
+  // step 3: get the wallet total balance 
   useEffect(() => {
     var balance = 0;
     var balance_k = 0; //3
@@ -83,6 +88,8 @@ const AcyConnectWallet = props => {
     Object.keys(tokenBalanceDict).forEach(ele => {
       // balance calculate
       let flag = tokenBalanceDict[ele].substr(-1).toUpperCase();
+
+      console.log("test tokenBalance kmbt", ele, tokenBalanceDict[ele], tokenPriceDict[ele])
       switch (flag) {
         case "K":
           balance_k = balance_k + (Number(tokenBalanceDict[ele].substr(0, tokenBalanceDict[ele].length - 1)) * tokenPriceDict[ele])

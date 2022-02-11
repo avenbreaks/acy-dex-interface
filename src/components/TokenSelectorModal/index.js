@@ -24,6 +24,11 @@ const TokenSelectorModal = ({ onCancel, visible, onCoinClick }) => {
     const [currentPanel, setCurrentPanel] = useState("selectToken");
 
     const [initTokenList, setInitTokenList] = useState(INITIAL_TOKEN_LIST);
+    useEffect(() => {
+        console.log("tokenSelectorModal tokenlist changed", INITIAL_TOKEN_LIST)
+        setInitTokenList(INITIAL_TOKEN_LIST)
+    }, [INITIAL_TOKEN_LIST]);
+
     const [customTokenList, setCustomTokenList] = useState([]);
     const [tokenSearchInput, setTokenSearchInput] = useState('');
     const [favTokenList, setFavTokenList] = useState([]);
@@ -31,6 +36,7 @@ const TokenSelectorModal = ({ onCancel, visible, onCoinClick }) => {
     const [tokenBalanceDict, setTokenBalanceDict] = useState({});
 
     useEffect(() => {
+        console.log(">>>> print tokenlist", INITIAL_TOKEN_LIST)
         if (!INITIAL_TOKEN_LIST) return
 
         console.log("resetting page states in TokenSelectorModal", INITIAL_TOKEN_LIST)

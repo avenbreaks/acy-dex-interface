@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useWeb3React } from '@web3-react/core';
+import axios from '@/utils/customAxios';
 
 import TokenListSelector from './token_list';
 import MethodActionSelector from './contract_method_list';
@@ -15,12 +16,12 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 export const supportedChainIds = [56, 97, 137, 80001];
 const defaultLibrary = new JsonRpcProvider('https://bsc-dataseed1.defibit.io/');
 
-// import constant to normal js file
+// temporary solution, will be removed later
 export let constantInstance = {
     'account': undefined,
     'chainId': 56,
     'library': defaultLibrary,
-    'tokenList': TokenListSelector(56),
+    'tokenList': [],
     'methodMap': MethodActionSelector('method'),
     'actionMap': MethodActionSelector('action'),
     'scanUrlPrefix': ScanUrlSelector(56),
@@ -33,6 +34,42 @@ export let constantInstance = {
     'marketAPISetting': FarmSettingSelector(56),
     'marketTokenList': TokenListSelector(56),
 };
+
+// import constant to normal js file
+let lastChainId;
+let lastTokenList;
+export const ConstantLoader = async (chainId = 56, marketChainId = 56) => {
+    console.log(">>>> tring to change chainId")
+    const chainSupportedIndex = (supportedChainIds.indexOf(chainId) !== -1);
+    const fallbackChainId = chainSupportedIndex ? chainId : 56;    // redirect unsupported chainId and undefined to 56
+
+    const marketChainSupportedIndex = (supportedChainIds.indexOf(marketChainId) !== -1);
+    const marketNetwork = marketChainSupportedIndex ? marketChainId : 56;
+
+    const constants = {
+        // 'tokenList': TokenListSelector(fallbackChainId),
+        'methodMap': MethodActionSelector('method'),
+        'actionMap': MethodActionSelector('action'),
+        'scanUrlPrefix': ScanUrlSelector(fallbackChainId),
+        'scanAPIPrefix': ScanAPIUrlSelector(fallbackChainId),
+        'farmSetting': FarmSettingSelector(fallbackChainId),
+        'launchpadSetting': LaunchpadSettingSelector(fallbackChainId),
+        'sdkSetting': SDK_SETTING,
+        'gasTokenSymbol': GAS_TOKEN_SYMBOL[fallbackChainId],
+        'marketAPISetting': FarmSettingSelector(marketNetwork),
+        'marketTokenList': TokenListSelector(marketNetwork),
+    };
+    
+    // fetch tokenList from backend
+    if (fallbackChainId != lastChainId) {
+        lastTokenList = await axios.get(constants.farmSetting.API_URL + '/configs/tokenlist', {canCache: true}).then(res => res.data.data);
+        console.log("request backend for tokenList", lastTokenList);
+    }
+    
+    constants.tokenList = lastTokenList;
+
+    return constants;
+}
 
 // export web3 wallet status
 export const CHAINID = () => constantInstance.chainId
@@ -65,30 +102,6 @@ export const TOKEN_LIST = () => constantInstance.tokenList
 export const MARKET_API_URL = () => constantInstance.marketAPISetting.API_URL
 export const MARKET_TOKEN_LIST = () => constantInstance.marketTokenList
 
-export const ConstantLoader = (chainId = 56, marketChainId = 56) => {
-    const chainSupportedIndex = (supportedChainIds.indexOf(chainId) !== -1);
-    const fallbackChainId = chainSupportedIndex ? chainId : 56;    // redirect unsupported chainId and undefined to 56
-
-    const marketChainSupportedIndex = (supportedChainIds.indexOf(marketChainId) !== -1);
-    const marketNetwork = marketChainSupportedIndex ? marketChainId : 56;
-
-    const constants = {
-        'tokenList': TokenListSelector(fallbackChainId),
-        'methodMap': MethodActionSelector('method'),
-        'actionMap': MethodActionSelector('action'),
-        'scanUrlPrefix': ScanUrlSelector(fallbackChainId),
-        'scanAPIPrefix': ScanAPIUrlSelector(fallbackChainId),
-        'farmSetting': FarmSettingSelector(fallbackChainId),
-        'launchpadSetting': LaunchpadSettingSelector(fallbackChainId),
-        'sdkSetting': SDK_SETTING,
-        'gasTokenSymbol': GAS_TOKEN_SYMBOL[fallbackChainId],
-        'marketAPISetting': FarmSettingSelector(marketNetwork),
-        'marketTokenList': TokenListSelector(marketNetwork),
-    };
-
-    return constants;
-}
-
 // import constant to react component
 export const useConstantLoader = () => {
     const { account, chainId, library } = useWeb3React();
@@ -96,15 +109,15 @@ export const useConstantLoader = () => {
 
     const marketChainId = Number(localStorage.getItem("market"));
 
-
-    useEffect(() => {
+    useEffect(async () => {
+        console.log("start fetching new constants")
         const chainSupportedIndex = (supportedChainIds.indexOf(chainId) !== -1);
         const fallbackChainId = chainSupportedIndex ? chainId : 56;    // redirect unsupported chainId and undefined to 56
-
+        
         const marketChainSupportedIndex = (supportedChainIds.indexOf(marketChainId) !== -1);
         const marketNetwork = marketChainSupportedIndex ? marketChainId : 56;
-
-        const staticConstants = ConstantLoader(fallbackChainId, marketNetwork);
+        
+        const staticConstants = await ConstantLoader(fallbackChainId, marketNetwork);
         const constants = Object.assign({
             'account': chainSupportedIndex ? account : undefined,
             'chainId': fallbackChainId,
@@ -112,9 +125,13 @@ export const useConstantLoader = () => {
             'marketNetwork': marketNetwork,
         }, staticConstants);
 
+        // temporary solution, will be removed later
         constantInstance = constants;
+
         setConstant(constants);
+        console.log("test new constant is set", constants)
     }, [account, chainId, marketChainId]);
+    
 
     return constant;
 }

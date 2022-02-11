@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core';
-import React, { Component, useState, useEffect, useRef } from 'react';
+import React, { Component, useState, useEffect, useRef, useMemo } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { connect } from 'umi';
 import { Button, Row, Col, Icon, Skeleton, Card } from 'antd';
@@ -100,9 +100,16 @@ const StyledCard = styled(AcyCard)`
     
 `;
 
+const SwapWrapper = props => {
+  const [network, setNetwork] = useState();
+  return (<Swap {...props} key={network} setNetwork={setNetwork} />);
+}
+
 const Swap = props => {
   const {account, library, chainId, tokenList: supportedTokens, farmSetting: { API_URL: apiUrlPrefix}} = useConstantLoader();
-  console.log("@/ inside swap:", supportedTokens, apiUrlPrefix)
+  useEffect(() => {
+    props.setNetwork(chainId);
+  }, [chainId]);
 
   const [pricePoint, setPricePoint] = useState(0);
   const [pastToken1, setPastToken1] = useState('ETH');
@@ -150,7 +157,7 @@ const Swap = props => {
     setTransactionList([]);
     setTableLoading(true);
     setTransactionNum(0);
-  }, [chainId])
+  }, [supportedTokens])
 
   const refContainer = useRef();
   refContainer.current = transactionList;
@@ -230,6 +237,8 @@ const Swap = props => {
   //get chart data the interval is 5 min
 
   useEffect(() => {
+    if (!activeToken0 || !activeToken1) return;
+
     dispatch({
       type: "swap/updateTokens",
       payload: {
@@ -379,7 +388,10 @@ const Swap = props => {
   //     });
   // }
 
-  const lineTitleRender = () => {
+  const lineTitleRender = useMemo(() => {
+    console.log("lineTitleRender", supportedTokens, activeToken0, activeToken1)
+    if (supportedTokens.length == 0 || !activeToken0 || !activeToken1)
+      return [<>No Token List Available</>]
 
     let token0logo = null;
     let token1logo = null;
@@ -437,7 +449,7 @@ const Swap = props => {
         </div>
       </div>,
     ];
-  };
+  }, [supportedTokens, activeToken0, activeToken1]);
 
   const selectTime = pt => {
     const dateSwitchFunctions = {
@@ -519,7 +531,7 @@ const Swap = props => {
       <div className={styles.main}>
         <div className={styles.rowFlexContainer}>
           <div className={`${styles.colItem} ${styles.priceChart}`}>
-            <StyledCard title={lineTitleRender()}>
+            <StyledCard title={lineTitleRender}>
               <div
                 style={{
                   // width: '100%',
@@ -668,7 +680,7 @@ export default connect(({ profile, transaction, swap, loading }) => ({
   loading: loading.effects['profile/fetchBasic'],
 }))(props => (
   <Media query="(max-width: 599px)">
-    {isMobile => <Swap {...props} isMobile={isMobile} />}
+    {isMobile => <SwapWrapper {...props} isMobile={isMobile} />}
   </Media>
 ))
 

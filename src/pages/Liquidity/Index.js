@@ -33,7 +33,12 @@ import {useConnectWallet} from '@/components/ConnectWallet';
 
 const { AcyTabPane } = AcyTabs;
 
-const BasicProfile = (props) => {
+const LiquidityWrapper = props => {
+  const [network, setNetwork] = useState();
+  return (<Liquidity {...props} key={network} setNetwork={setNetwork} />)
+}
+
+const Liquidity = (props) => {
 
   const [visible, setVisible] = useState(false);
   const [visibleConfirmOrder, setVisibleConfirmOrder] = useState(false);
@@ -44,6 +49,9 @@ const BasicProfile = (props) => {
   const [tableLoading, setTableLoading] = useState(true);
   const [transactionNum, setTransactionNum] = useState(0);
   const { account, chainId, library, activate } = useWeb3React();
+  useEffect(() => {
+    props.setNetwork(chainId);
+  }, [chainId]);
 
   const refContainer = useRef();
   refContainer.current = transactionList;
@@ -222,4 +230,4 @@ const BasicProfile = (props) => {
 export default connect(({ profile, loading }) => ({
   profile,
   loading: loading.effects['profile/fetchBasic'],
-}))(BasicProfile);
+}))(LiquidityWrapper);

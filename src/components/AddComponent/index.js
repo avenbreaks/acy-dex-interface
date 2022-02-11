@@ -232,7 +232,7 @@ const AddLiquidityComponent = props => {
         setParsedToken1Amount,
         setArgs,
         setValue
-      );
+      ).catch(e => console.log("getEstimated error", e));
     },
     [
       token0,
@@ -283,7 +283,7 @@ const AddLiquidityComponent = props => {
         setParsedToken1Amount,
         setArgs,
         setValue
-      );
+      ).catch(e => console.log("getEstimated error", e));
     },
     [
       token0,
@@ -704,7 +704,7 @@ const AddLiquidityComponent = props => {
                               setParsedToken1Amount,
                               setArgs,
                               setValue
-                            );
+                            ).catch(e => console.log("getEstimated error", e));
 
                             if (needApproveToken1 == false) {
                               if (!noLiquidity) setButtonContent('Add liquidity');
@@ -772,7 +772,7 @@ const AddLiquidityComponent = props => {
                               setParsedToken1Amount,
                               setArgs,
                               setValue
-                            );
+                            ).catch(e => console.log("getEstimated error", e));
 
                             if (needApproveToken0 == false) {
                               if (!noLiquidity) setButtonContent('Add liquidity');

@@ -287,13 +287,13 @@ export async function getEstimated(
       token0IsETH ? ETHER : new Token(chainId, inToken0Address, inToken0Decimal, inToken0Symbol),
       account,
       library
-    );
+    ).catch(e => console.log("addLiquidty.js error: CHECK BALANCE section", e));
 
     let userToken1Balance = await getUserTokenBalanceRaw(
       token1IsETH ? ETHER : new Token(chainId, inToken1Address, inToken1Decimal, inToken1Symbol),
       account,
       library
-    );
+    ).catch(e => console.log("addLiquidty.js error: CHECK BALANCE section", e));
 
     console.log('token0 balance');
     console.log(userToken0Balance);
@@ -315,7 +315,8 @@ export async function getEstimated(
         return new CustomError(e.fault);
       } else {
         setButtonContent('userHasSufficientBalance');
-        return new CustomError('unknow error');
+        console.log("unknown error", e)
+        return new CustomError('Unknown error');
       }
     }
 

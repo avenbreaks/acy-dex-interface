@@ -240,7 +240,7 @@ export async function getUserTokenBalance(token, chainId, account, library) {
       tokenIsETH ? ETHER : new Token(chainId, address, decimals, symbol),
       account,
       library
-    ),
+    ).catch(e => console.log("caught error in utils/getUserTokenBalanceRaw")),
     decimals
   );
 }
@@ -505,6 +505,7 @@ export function parseArbitrageLog({ data, topics }) {
 }
 export async function getAllSuportedTokensPrice() {
   const tokenList = TOKENLIST();
+  console.log("test getAllSuportedTokensPrice tokenlist", tokenList)
   const searchIdsArray = tokenList.map(token => token.idOnCoingecko);
   const searchIds = searchIdsArray.join('%2C');
   const tokensPrice = await axios.get(

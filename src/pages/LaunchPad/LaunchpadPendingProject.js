@@ -43,6 +43,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useConnectWallet } from "@/components/ConnectWallet";
 import POOLABI from "@/acy-dex-swap/abis/AcyV1Poolz.json";
 import EditButton from './components/EditButton'
+import axios from 'axios';
 
 import { useConstantLoader, LAUNCHPAD_ADDRESS, LAUNCH_RPC_URL, CHAINID, API_URL, TOKEN_LIST, MARKET_TOKEN_LIST } from "@/constants";
 
@@ -55,6 +56,7 @@ const LaunchpadProject = () => {
     const { projectId } = useParams();
     const [receivedData, setReceivedData] = useState({});
     const [mainCoinLogoURI, setMainCoinLogoURI] = useState(null);
+    const [walletID, setwalletID] = useState(null);
 
     // CONSTANTS
     const InputGroup = Input.Group;
@@ -91,83 +93,37 @@ const LaunchpadProject = () => {
         return res
     }
 
-    // HOOKS
-    // Retrieve project data from db
-    useEffect(() => {
-        getProjectInfo(API_URL(), projectId)
-            .then(res => {
-                if (res) {
-                    // extract data from string
-                    console.log("fecthing project info ------------111", res.contextData)
-                    const contextData = JSON.parse(res.contextData);
+    // retrieve data from db
+    useEffect(async () => {
 
-                    res['tokenLabels'] = contextData['tokenLabels'];
-                    res['projectDescription'] = contextData['projectDescription'];
-                    res['alreadySale'] = contextData['alreadySale'];
-                    res['salePercentage'] = contextData['salePercentage'];
-                    res['posterUrl'] = contextData['posterUrl'];
-                    res['tokenLogoUrl'] = res.basicInfo.projectTokenUrl;
-
-                    res['regStart'] = formatTime(res.scheduleInfo.regStart);
-                    res['regEnd'] = formatTime(res.scheduleInfo.regEnd);
-                    res['saleStart'] = formatTime(res.scheduleInfo.saleStart);
-                    res['saleEnd'] = formatTime(res.scheduleInfo.saleEnd);
-
-                    res['tokenPrice'] = res.saleInfo.tokenPrice
-                    res['totalSale'] = res.saleInfo.totalSale;
-                    res['totalRaise'] = res.saleInfo.totalRaise;
-                    res['projectUrl'] = res.saleInfo.projectUrl;
-                    res['projectName'] = res.basicInfo.projectName;
-                    res['projectToken'] = res.basicInfo.projectToken;
-                    res['mainCoin'] = res.basicInfo.mainCoin
-
-
-
-                    // get state to hide graph and table
-                    // const curT = new Date()
-                    // if (curT < res.scheduleInfo.saleStart) setCompareAlloDate(true)
-                    const mainCoinInfo = TOKEN_LIST().find(item => item.symbol == res.basicInfo.mainCoin)
-                    setMainCoinLogoURI(mainCoinInfo.logoURI);
-                    setReceivedData(res);
-                    console.log("fecthing project info ------------222", res)
-                } else {
-                    console.log('redirect to list page');
-                    history.push('/launchpad');
-                }
-            })
-            .catch(e => {
-                console.log("Project Detail check errrrrrrrrrrr", e);
-                // console.error(e);
-                history.push('/launchpad');
-            });
-    }, [library, account]);
-
+        let result = await axios.get(`http://localhost:3001/bsc-test/api/applyForm/getFormById?projectId=${projectId}`);
+        setwalletID(result.data[0].walletId)
+        // console.log("project data=", result);
+        // console.log("project data data= ", result.data);
+        const resultData = result.data[0].form;
+        setReceivedData(resultData)
+        // console.log("walletID=", walletID)
+        // console.log("account=", account)
+    }, [, account])
 
     // COMPONENTS
-    const TokenBanner = ({ posterUrl }) => {
-        return (
-            <img
-                className="tokenBanner"
-                src={posterUrl}
-                alt=""
-            />
-        );
-    };
 
-    const TokenLogoLabel = ({ projectName, tokenLogo }) => {
+    const TokenLogoLabel = ({ projectname, logoURL }) => {
+        const walletID_t = walletID;
+        const account_t = account;
         return (
             <div className="flexContainer" >
                 <img
                     className="tokenLogo"
                     alt=""
-                    src={tokenLogo}
+                    src={logoURL}
                     loading="eager"
                     onClick={() => clickToWebsite()}
                 />
                 <div className="tokenInfo">
-                    <span className="tokenTitle" onClick={() => clickToWebsite()}>{projectName}</span>
+                    <span className="tokenTitle" onClick={() => clickToWebsite()}>{projectname}</span>
                     <div className="tokenLabelBar">
-                        {receivedData.tokenLabels &&
+                        {/*receivedData.tokenLabels &&
                             receivedData.tokenLabels.map((label) => {
                                 if (label === "BSC") return (
                                     <span className="tokenLabel">
@@ -183,13 +139,15 @@ const LaunchpadProject = () => {
                                 )
                                 return <span className="tokenLabel">{label}</span>
                             })
-                        }
+                        */}
                     </div>
                 </div>
-                <div className="flexContainer EditButton">
-                    <EditButton />
-                </div>
 
+                {walletID_t == account_t ?
+                    <div className="flexContainer EditButton">
+                        <EditButton />
+                    </div>
+                    : console.log("wallet ID and account not matched! Edit button is hidden")}
             </div>
 
         );
@@ -219,8 +177,8 @@ const LaunchpadProject = () => {
                         <div>
                             <p>Sale (FCFS)</p>
                             <div>
-                                <p className="shortText">From : {receivedData.saleStart}</p>
-                                <p className="shortText">To : {receivedData.saleEnd}</p>
+                                <p className="shortText">From : {receivedData.start}</p>
+                                <p className="shortText">To : {receivedData.ended}</p>
                             </div>
                         </div>
 
@@ -252,33 +210,6 @@ const LaunchpadProject = () => {
         );
     };
 
-    const KeyInformation = ({ projectToken, totalSale, tokenPrice }) => {
-        return (
-            <div className="circleBorderCard cardContent">
-                <div className="keyinfoRow">
-                    <div className="keyinfoName">Total Sales</div>
-                    <div>
-                        {totalSale} {projectToken}
-                    </div>
-                </div>
-
-                <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
-                    <div className="keyinfoName">Total Raise</div>
-                    <div>
-                        {receivedData.totalRaise} {receivedData.mainCoin}
-                    </div>
-                </div>
-
-                <div className="keyinfoRow" style={{ marginTop: '1rem' }}>
-                    <div className="keyinfoName">Rate</div>
-                    <div>
-                        1 {projectToken} = {tokenPrice} {receivedData.mainCoin}
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     const ProjectDescription = () => {
         return (
             <div className="circleBorderCard cardContent">
@@ -291,28 +222,33 @@ const LaunchpadProject = () => {
                     <div className="projectDescription">
                         <div className='socialmedia-container'>
                             {
-                                receivedData.social && receivedData.social[0] &&
+                                (receivedData.websiteURL || receivedData.whitepaperLINK || receivedData.githubLINK || receivedData.telegramLINK || receivedData.twitterLINK || receivedData.linkedinLINK || receivedData.discordLINK) &&
                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <a href={receivedData.social[0].Website} target="_blank" rel="noreferrer" style={{ width: '30%', marginRight: '1rem', alignSelf: 'center' }}>{receivedData.social[0].Website}</a>
+                                    {receivedData.websiteURL &&
+                                        <a href={receivedData.websiteURL} target="_blank" rel="noreferrer" style={{ width: '30%', marginRight: '1rem', alignSelf: 'center' }}>{receivedData.websiteURL}</a>
+                                    }
                                     <div id='social container' className='social-container'>
-                                        {Object.entries(receivedData.social[0]).map((item) => {
-                                            if (item[1] !== null) {
-                                                if (item[0] === "Website" || item[0] === "Polyaddress" || item[0] === "Etheraddress" || item[0] === "Confluxaddress") return null
-                                                return (
-                                                    <SocialMedia url={logoObj[item[0]]} link={item[1]} socialText={item[0]} />
-                                                )
-                                            }
-                                        })}
+                                        {receivedData.whitepaperLINK &&
+                                            <SocialMedia url={logoObj["Whitepaper"]} link={receivedData.whitepaperLINK} socialText={"Whitepaper"} />
+                                        }
+                                        {receivedData.githubLINK &&
+                                            <SocialMedia url={logoObj["Github"]} link={receivedData.githubLINK} socialText={"Github"} />
+                                        }
+                                        {receivedData.telegramLINK &&
+                                            <SocialMedia url={logoObj["Telegram"]} link={receivedData.telegramLINK} socialText={"Telegram"} />
+                                        }
+                                        {receivedData.twitterLINK &&
+                                            <SocialMedia url={logoObj["Twitter"]} link={receivedData.twitterLINK} socialText={"Twitter"} />
+                                        }
+                                        {receivedData.linkedinLINK &&
+                                            <SocialMedia url={logoObj["Linkedin"]} link={receivedData.whitepaperLINK} socialText={"Linkedin"} />
+                                        }
                                     </div>
                                 </div>
                             }
                         </div>
                         <div style={{ padding: '2.5em 0 0 0' }}>
-                            {receivedData.projectDescription && <p>{receivedData.projectDescription[0]}</p>}
-                            {receivedData.projectDescription &&
-                                receivedData.projectDescription
-                                    .slice(1)
-                                    .map(desc => <p style={{ paddingTop: '2rem' }}>{desc}</p>)}
+                            {receivedData.description && <p>{receivedData.description}</p>}
                         </div>
                     </div>
                 </div>
@@ -320,165 +256,14 @@ const LaunchpadProject = () => {
         );
     };
 
-    const Allocation = () => {
-
-        const colorCodes = ["#C6224E", "#1E5D91", "#E29227", "#1C9965", "#70BA33"];
-        const baseColorCodes = ["#631027", "#0f2e48", "#74490f", "#0e4c32", "#375d19"];
-
-        const AllocationCard = ({ index }) => {
-
-            const computeCoverClass = () => {
-                let classString = 'cover';
-                let coverOpenState = coverOpenStates[index];
-                if (coverOpenState === 'open') {
-                    classString += ' openCover';
-                } else if (coverOpenState === 'removed') {
-                    classString = 'nocover';
-                }
-                return classString;
-            };
-
-            return (
-                <div className='allocationCard-container'>
-                    <div className="allocationCard" style={{ backgroundColor: baseColorCodes[index] }}>
-                        <div
-                            className={'cover'}
-                            style={{ backgroundColor: colorCodes[index] }}
-                        >
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const allocationCards = () => {
-            const cards = [];
-            for (let i = 0; i < 5; i++) {
-                cards.push(
-                    <AllocationCard
-                        index={i}
-                        coverOpenState={'cover'}
-                    />
-                );
-            }
-            return cards;
-        };
-
-        const tooltipTitle = () => {
-            return (
-                <div>
-                    <span>Increase Your Allocation Amount:</span>
-                    <br />
-                    <span className='tool-tip-content'>
-                        1.Increase your trading volume @ <Link to="/#/exchange" target="_blank">Exchange</Link>
-                    </span>
-                    <br />
-                    <span className='tool-tip-content'>
-                        2.Increase your liquidity @ <Link to="/#/liquidity" target="_blank">Liquidity</Link>
-                    </span>
-                    <br />
-                    <span className='tool-tip-content'>
-                        3.Buy and hold more $ACY @ <Link to="/#/exchange" target="_blank">Exchange</Link>
-                    </span>
-                </div>
-            )
-        }
-
-        return (
-            <div>
-                <div className='cardContent allocation-content allocation-content-active'>
-                    <div className="allocation-title-container">
-                        <div className='title-tooltip-container'>
-                            <p className="allocation-title">Allocation</p>
-                            <Tooltip title={tooltipTitle} mouseEnterDelay={0} mouseLeaveDelay={0.25}>
-                                <Icon type="info-circle" className='tool-tip-icon' />
-                            </Tooltip>
-                        </div>
-
-                        <div className='allocation-cards'>
-                            <div className="allocationContainer">
-                                <AllocationCard index={0} />
-                                <AllocationCard index={1} />
-                                <AllocationCard index={2} />
-                                <AllocationCard index={3} />
-                                <AllocationCard index={4} />
-                            </div>
-                        </div>
-                        <div className="allocation-container-dummy"></div>
-                    </div>
-
-                    <form className="sales-container">
-                        <label for="sale-number" className="sale-vesting-title">
-                            Sale
-                        </label>
-                        <div className="sales-input-container">
-                            <InputGroup>
-                                <Input
-                                    className="sales-input"
-                                    value={"0"}
-                                />
-                                <div className="unit-max-group">
-                                    <div className="token-logo">
-                                        <img src={mainCoinLogoURI} alt="token-logo" className="token-image" />
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '2rem', fontWeight: '700' }}>{receivedData.mainCoin}</div>
-                                </div>
-                            </InputGroup>
-                        </div>
-                        <Button
-                            className="sales-submit"
-                            disabled={true}
-                        >
-                            Buy
-                        </Button>
-                    </form>
-
-
-                    <div className="vesting-open-container">
-                        <div className="vesting-container">
-                            <p className="sale-vesting-title vesting">Vesting</p>
-                            <div className="text-line-container">
-                                <p>Unlock 0% at TGE, 0 stages of vesting : </p>
-                                <span className="vesting-line" />
-
-                            </div>
-                            <div className="arrow-down-container">
-                                <CaretDownOutlined
-                                    className={'arrow-down-inactive arrow-down'}
-                                />
-                            </div>
-                            <div className='vesting-trigger-container'></div>
-                        </div>
-                        <div
-                            className={'vesting-schedule'}
-                        >
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        );
-    };
 
     const CardArea = () => {
         return (
             <div className="gridContainer">
                 <div className="leftGrid">
                     <TokenProcedure />
-                    {true &&
-                        <KeyInformation
-                            projectToken={receivedData.projectToken}
-                            totalSale={receivedData.totalSale}
-                            tokenPrice={receivedData.tokenPrice}
-                        />
-                    }
-
                 </div>
                 <div className="rightGrid">
-                    <div className="circleBorderCard">
-                        <Allocation />
-                    </div>
                     <ProjectDescription />
                 </div>
             </div>
@@ -488,11 +273,9 @@ const LaunchpadProject = () => {
     return (
         <div>
             <div className="mainContainer">
-
-                <TokenBanner posterUrl={receivedData.posterUrl} />
                 <TokenLogoLabel
-                    projectName={receivedData.projectName}
-                    tokenLogo={receivedData.tokenLogoUrl}
+                    projectName={receivedData.projectname}
+                    tokenLogo={receivedData.logoURL}
                 />
                 <CardArea />
             </div>

@@ -5,7 +5,7 @@ import $ from 'jquery';
 import ProjectsCard from './ProjectsCard.js';
 import ExpandedContent from './ExpandedContent.js';
 
-const PendingProjects = ({ data, openProject }) => {
+const PendingProjects = ({ data }) => {
 
     // const [isActiveUpcoming, setIsActiveUpcoming] = useState(false);
     // const [isIncomingExpanded, setisIncomingExpanded] = useState(false);
@@ -34,16 +34,25 @@ const PendingProjects = ({ data, openProject }) => {
                                 >
                                     <div className="">
                                         <ProjectsCard
-                                            projectID={obj.projectID}
-                                            start={obj.saleStart}
-                                            ddl={obj.saleEnd}
-                                            raise={obj.totalRaise.toString() + ' USDT'}
-                                            sales={obj.totalSale.toString() + ' ' + obj.projectToken}
-                                            rate={'1 ' + obj.projectToken + ' = ' + obj.tokenPrice.toString() + ' USDT'}
-                                            title={obj.projectName}
+                                            //_id = projectId
+                                            //form.start=saleStart
+                                            //form.ended=salesEnd
+                                            //form.raise=totalRaise
+                                            //form.sale=totalSale
+                                            //form.symbol = projectToken
+                                            //form.idoPrice = tokenPrice???
+                                            //form.projectname=projectName
+                                            //form.logoURL = projectTokenUrl
+                                            projectID={obj._id}
+                                            start={obj.form.start}
+                                            ddl={obj.form.ended}
+                                            raise={obj.form.raise + ' USDT'}
+                                            sales={obj.form.sale + ' ' + obj.projectToken}
+                                            rate={'1 ' + obj.form.symbol + ' = ' + obj.form.idoPrice + ' USDT'}
+                                            title={obj.form.projectname}
                                             isPending={true}
-                                            tokenLogoUrl={obj.projectTokenUrl}
-                                            openProject={openProject}
+                                            tokenLogoUrl={obj.form.logoURL}
+                                        //openProject={openProject}
                                         />
                                     </div>
                                     {/* <i className="fa fa-folder-o" /> */}

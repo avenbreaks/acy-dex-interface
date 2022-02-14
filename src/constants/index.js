@@ -32,7 +32,7 @@ export let constantInstance = {
     'gasTokenSymbol': GAS_TOKEN_SYMBOL[56],
     'marketNetwork': 56,
     'marketAPISetting': FarmSettingSelector(56),
-    'marketTokenList': TokenListSelector(56),
+    'marketTokenList': []
 };
 
 // import constant to normal js file
@@ -56,8 +56,7 @@ export const ConstantLoader = async (chainId = 56, marketChainId = 56) => {
         'launchpadSetting': LaunchpadSettingSelector(fallbackChainId),
         'sdkSetting': SDK_SETTING,
         'gasTokenSymbol': GAS_TOKEN_SYMBOL[fallbackChainId],
-        'marketAPISetting': FarmSettingSelector(marketNetwork),
-        'marketTokenList': TokenListSelector(marketNetwork),
+        'marketAPISetting': FarmSettingSelector(marketNetwork)
     };
     
     // fetch tokenList from backend
@@ -65,7 +64,7 @@ export const ConstantLoader = async (chainId = 56, marketChainId = 56) => {
         lastTokenList = await axios.get(constants.farmSetting.API_URL + '/configs/tokenlist', {canCache: true}).then(res => res.data.data);
         console.log("request backend for tokenList", lastTokenList);
     }
-    
+    constants.marketTokenList = await axios.get(constants.marketAPISetting.API_URL + '/configs/tokenlist', {canCache: true}).then(res => res.data.data);
     constants.tokenList = lastTokenList;
 
     return constants;

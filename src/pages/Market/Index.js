@@ -17,6 +17,7 @@ import { MarketSearchBar, PoolTable, TokenTable, TransactionTable } from './Util
 import { JsonRpcProvider } from "@ethersproject/providers"; 
 import { isMobile } from 'react-device-detect';
 import ConnectWallet from './ConnectWallet';
+import {MARKET_API_URL} from '@/constants';
 
 import { useConstantLoader } from '@/constants';
 
@@ -59,6 +60,7 @@ const MarketIndex = props => {
 
   const {activate } = useWeb3React();
   const {account, library, chainId} = useConstantLoader();
+  const marketListener = MARKET_API_URL();
 
 
   // connect to provider, listen for wallet to connect
@@ -72,7 +74,6 @@ const MarketIndex = props => {
       connectWalletByLocalStorage();
     }
   }, []);
-
   useEffect(() => {
     fetchGlobalTransaction().then(globalTransactions => {
         console.log('globaltransaction', globalTransactions);
@@ -116,7 +117,7 @@ const MarketIndex = props => {
       setselectedIndexBar(dataDict.volume24h.length - 1);
       setselectedDataBar(abbrNumber(dataDict.volume24h[dataDict.tvl.length - 1][1]));}
     });
-  }, [chainId, marketNetwork]);
+  }, [marketListener]);
 
   const onLineGraphHover = (newData, newIndex) => {
     setselectedDataLine(abbrNumber(newData));

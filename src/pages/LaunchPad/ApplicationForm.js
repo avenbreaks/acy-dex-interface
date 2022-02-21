@@ -1,8 +1,9 @@
 
 import { useEffect, useState } from "react"
+import { useParams } from 'react-router-dom';
 import './css/Form.css';
 import axios from 'axios';
-import { API_URL} from '@/constants';
+import { API_URL } from '@/constants';
 import { useConstantLoader } from '@/constants';
 
 // CONSTANTS
@@ -279,7 +280,8 @@ const ERROR_INFOS = {
 const InputField = ({
   type,
   name,
-  setFormField
+  setFormField,
+  originalData
 }) => {
 
   const [isError, setIsError] = useState(false);
@@ -312,25 +314,27 @@ const InputField = ({
           placeholder={PLACE_HOLDERS[name]}
           onChange={onChangeField}
           onBlur={onBlurField}
+          defaultValue={originalData}
         />
       </div>
     )
-      }
-      else if (type === "s") {
-        return (
-          <div>
-            {isError &&
-              <div className="error-info">{ERROR_INFOS[name]}</div>
-            }
-            <li
-              //type={"text"}
-              placeholder={PLACE_HOLDERS[name]}
-              onChange={onChangeField}
-              onBlur={onBlurField}
-            />
-          </div>
-        )
-      }
+  }
+  else if (type === "s") {
+    return (
+      <div>
+        {isError &&
+          <div className="error-info">{ERROR_INFOS[name]}</div>
+        }
+        <li
+          //type={"text"}
+          placeholder={PLACE_HOLDERS[name]}
+          onChange={onChangeField}
+          onBlur={onBlurField}
+          defaultValue={originalData}
+        />
+      </div>
+    )
+  }
   return (
     <div>
       {isError &&
@@ -341,6 +345,7 @@ const InputField = ({
         placeholder={PLACE_HOLDERS[name]}
         onChange={onChangeField}
         onBlur={onBlurField}
+        defaultValue={originalData}
       />
     </div>
   )
@@ -353,26 +358,32 @@ const ApplicationForm = () => {
   const [currentFieldIndex, setCurrentFieldIndex] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [currentprogressbar, setprogressbar] = useState();
-  const { projectId } = useParams();
-
+  const { projectId = -1 } = useParams();
+  const [receivedData, setReceivedData] = useState({});
   const { account, chainId, library } = useConstantLoader();
 
   // HOOKS
-  useEffect(()=>{
-    console.log("User Check====101====:",account);
-    if(account == undefined){
+  useEffect(() => {
+    console.log("User Check====101====:", account);
+    if (account == undefined) {
       alert("Please Return to the launch Page connect your wallet befor you apply for IDO!!!");
     }
-  },[account]);
+  }, [account]);
 
   useEffect(() => {
     console.log('formdata', formData);
   }, [formData]);
 
-  //TODO : ZENGHUI GET FORM BY ID
-  useEffect(()=>{
+  // Get form by Id (if projectId = -1, means first time creating form)
+  if (projectId != -1) {
+    useEffect(async () => {
+      let result = await axios.get(`http://localhost:3001/bsc-test/api/applyForm/getFormById?projectId=${projectId}`);
+      // console.log("project data data= ", result.data);
+      const resultData = result.data[0].form;
+      setReceivedData(resultData)
+    }, [projectId])
+  }
 
-  },[projectId])
   // FUNCTIONS
   const setFormField = (fieldname, value) => {
     const newFormData = Object.assign({}, formData);
@@ -390,12 +401,12 @@ const ApplicationForm = () => {
   //       if (!VALIDATION_FUNCTIONS[name](value)) {
   //         setIsError(true);
   //       } else {
-  
+
   //         setIsError(false);
   //       }
   //     }
   //   }
-  
+
   //   const onBlurField = (e) => {
   //     const value = e.target.value;
   //     setFormField(name, value);
@@ -405,10 +416,10 @@ const ApplicationForm = () => {
   //       {isError &&
   //         <div className="error-info">{ERROR_INFOS[name]}</div>
   //       }
-        
+
   //         onChange={onChangeField}
   //         onBlur={onBlurField}
-        
+
   //     </div>
   //   )
   //}
@@ -424,26 +435,40 @@ const ApplicationForm = () => {
     // `${apiUrlPrefix}/applyForm/createForm/walletId=${account}`,obj
 
     // const apiUrlPrefix = API_URL();
-    axios.post(
-      `http://localhost:3001/bsc-test/api/applyForm/createForm?walletId=${account}`,formData
-    )
-      .then(data => {
-        console.log(data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-    e.preventDefault();
+    if (projectId == -1) {
+      axios.post(
+        `http://localhost:3001/bsc-test/api/applyForm/createForm?walletId=${account}`, formData
+      )
+        .then(data => {
+          console.log(data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      e.preventDefault();
+      alert("Submit successfully!")
+    }
+    else {
 
-      //TODO: ZENGHUI POST API updateForm(projectId)
+      axios.post(
+        `http://localhost:3001/bsc-test/api/applyForm/updateForm?projectId=${projectId}`, formData
+      )
+        .then(data => {
+          console.log(data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      e.preventDefault();
+      alert("Update successfully!")
+    }
 
   }
 
   // COMPONENTS
   const ProgressBar = () => {
 
-    if (currentFieldIndex === 2)
-    {
+    if (currentFieldIndex === 2) {
       return (
         <ul id="progressbar">
           <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
@@ -462,8 +487,7 @@ const ApplicationForm = () => {
         </ul>
       )
     }
-    else
-    {
+    else {
       return (
         <ul id="progressbar">
           <li className="active" type="button" onClick={() => setCurrentFieldIndex(0)}>Project</li>
@@ -472,7 +496,7 @@ const ApplicationForm = () => {
         </ul>
       ) //style={{className: currentFieldIndex === 2 ? 'active' : 'active' }} 
     }
-    
+
   }
   return (
     <div id="form-container">
@@ -484,21 +508,21 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Create your account</h2>
             <h3 className="fs-subtitle">This is step 1</h3>
-            <InputField name="username" setFormField={setFormField} />
-            <InputField name="projectname" setFormField={setFormField} />
-            <InputField name="email" setFormField={setFormField} />
-            <InputField name="websiteURL" setFormField={setFormField} />
-            <InputField name="logoURL" setFormField={setFormField} />
-            <InputField name="description" setFormField={setFormField} type="area" />
-            <InputField name="category" setFormField={setFormField} />
-            <InputField name="projectIn" setFormField={setFormField} />
+            <InputField name="username" setFormField={setFormField} originalData={receivedData.username} />
+            <InputField name="projectname" setFormField={setFormField} originalData={receivedData.projectname} />
+            <InputField name="email" setFormField={setFormField} originalData={receivedData.email} />
+            <InputField name="websiteURL" setFormField={setFormField} originalData={receivedData.websiteURL} />
+            <InputField name="logoURL" setFormField={setFormField} originalData={receivedData.logoURL} />
+            <InputField name="description" setFormField={setFormField} type="area" originalData={receivedData.description} />
+            <InputField name="category" setFormField={setFormField} originalData={receivedData.category} />
+            <InputField name="projectIn" setFormField={setFormField} originalData={receivedData.projectIn} />
 
-            <InputField name="whitepaperLINK" setFormField={setFormField} />
-            <InputField name="githubLINK" setFormField={setFormField} />
-            <InputField name="telegramLINK" setFormField={setFormField} />
-            <InputField name="twitterLINK" setFormField={setFormField} />
-            <InputField name="linkedinLINK" setFormField={setFormField} />
-            <InputField name="discordLINK" setFormField={setFormField} />
+            <InputField name="whitepaperLINK" setFormField={setFormField} originalData={receivedData.whitepaperlINK} />
+            <InputField name="githubLINK" setFormField={setFormField} originalData={receivedData.githubLINK} />
+            <InputField name="telegramLINK" setFormField={setFormField} originalData={receivedData.telegramLINK} />
+            <InputField name="twitterLINK" setFormField={setFormField} originalData={receivedData.twitterLINK} />
+            <InputField name="linkedinLINK" setFormField={setFormField} originalData={receivedData.linkedinLINK} />
+            <InputField name="discordLINK" setFormField={setFormField} originalData={receivedData.discordLINK} />
 
             <input type="button" name="next" className="next action-button" value="Next" onClick={() => setCurrentFieldIndex(1)} />
           </fieldset>
@@ -508,10 +532,10 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Social Profiles</h2>
             <h3 className="fs-subtitle">Your presence on the social network</h3>
-            <InputField name="symbol" setFormField={setFormField} />
-            <InputField name="address" setFormField={setFormField} />
-            <InputField name="supply" setFormField={setFormField} />
-            <InputField name="ecolink" setFormField={setFormField} />
+            <InputField name="symbol" setFormField={setFormField} originalData={receivedData.symbol} />
+            <InputField name="address" setFormField={setFormField} originalData={receivedData.address} />
+            <InputField name="supply" setFormField={setFormField} originalData={receivedData.supply} />
+            <InputField name="ecolink" setFormField={setFormField} originalData={receivedData.ecolink} />
 
             <input type="button" name="previous" className="previous action-button" value="Previous" onClick={() => setCurrentFieldIndex(0)} />
             <input type="button" name="next" className="next action-button" value="Next" onClick={() => setCurrentFieldIndex(2)} />
@@ -522,19 +546,19 @@ const ApplicationForm = () => {
           <fieldset>
             <h2 className="fs-title">Personal Details</h2>
             <h3 className="fs-subtitle">We will never sell it</h3>
-            <InputField name="idoDate" setFormField={setFormField} />
-            <InputField name="start" setFormField={setFormField} />
-            <InputField name="ended" setFormField={setFormField} />
+            <InputField name="idoDate" setFormField={setFormField} originalData={receivedData.idoDate} />
+            <InputField name="start" setFormField={setFormField} originalData={receivedData.start} />
+            <InputField name="ended" setFormField={setFormField} originalData={receivedData.ended} />
 
             <legeng>3.4 Vesting Rule: </legeng>
-            <InputField type="s" className="fillBlank" name="vestingStart" setFormField={setFormField} />% at TGE, then linear unclock during next
-            <InputField className="fillBlank" name="vestingMonth" setFormField={setFormField} /> month on
-            <InputField className="fillBlank" name="vestingDate" setFormField={setFormField} /> (day)
+            <InputField type="s" className="fillBlank" name="vestingStart" setFormField={setFormField} originalData={receivedData.vestingStart} />% at TGE, then linear unclock during next
+            <InputField className="fillBlank" name="vestingMonth" setFormField={setFormField} originalData={receivedData.vestingMonth} /> month on
+            <InputField className="fillBlank" name="vestingDate" setFormField={setFormField} originalData={receivedData.vestingDate} /> (day)
 
-            <InputField name="idoPrice" setFormField={setFormField} />
-            <InputField name="raise" setFormField={setFormField} />
-            <InputField name="marketcap" setFormField={setFormField} />
-            <InputField name="sale" setFormField={setFormField} />
+            <InputField name="idoPrice" setFormField={setFormField} originalData={receivedData.idoPrice} />
+            <InputField name="raise" setFormField={setFormField} originalData={receivedData.raise} />
+            <InputField name="marketcap" setFormField={setFormField} originalData={receivedData.marketcap} />
+            <InputField name="sale" setFormField={setFormField} originalData={receivedData.sale} />
 
             <input type="button" name="previous" className="previous action-button" value="Previous" onClick={() => setCurrentFieldIndex(1)} />
             <input type="submit" name="submit" className="submit action-button" value="Submit" onClick={submitData} />

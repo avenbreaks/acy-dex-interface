@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-indent */
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import { Progress, Button, Table, Input, Tooltip, Icon, Alert } from 'antd';
 import { history } from 'umi';
 import styles from "./styles.less"
@@ -98,19 +98,20 @@ const LaunchpadProject = () => {
 
         let result = await axios.get(`http://localhost:3001/bsc-test/api/applyForm/getFormById?projectId=${projectId}`);
         setwalletID(result.data[0].walletId)
-        // console.log("project data=", result);
-        // console.log("project data data= ", result.data);
         const resultData = result.data[0].form;
         setReceivedData(resultData)
-        // console.log("walletID=", walletID)
-        // console.log("account=", account)
     }, [, account])
 
     // COMPONENTS
 
-    const TokenLogoLabel = ({ projectname, logoURL }) => {
+    const TokenLogoLabel = ({ projectID, projectname, logoURL }) => {
         const walletID_t = walletID;
         const account_t = account;
+        const history = useHistory();
+        const EditApplyForm = (projectid) => {
+            console.log('CLICK Edit!!!!')
+            history.push(`/launchpad/applyProject/${projectid}`)
+        };
         return (
             <div className="flexContainer" >
                 <img
@@ -145,7 +146,7 @@ const LaunchpadProject = () => {
 
                 {walletID_t == account_t ?
                     <div className="flexContainer EditButton">
-                        <EditButton />
+                        <div style={{ fontSize: 20, color: "white", fontWeight: "bold", alignSelf: "center" }} onClick={() => EditApplyForm(projectID)}>Edit</div>
                     </div>
                     : console.log("wallet ID and account not matched! Edit button is hidden")}
             </div>
@@ -276,6 +277,7 @@ const LaunchpadProject = () => {
                 <TokenLogoLabel
                     projectName={receivedData.projectname}
                     tokenLogo={receivedData.logoURL}
+                    projectID={projectId}
                 />
                 <CardArea />
             </div>

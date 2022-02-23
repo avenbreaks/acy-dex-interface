@@ -47,7 +47,7 @@ const PendingProjects = ({ data }) => {
                                             start={obj.form.start}
                                             ddl={obj.form.ended}
                                             raise={obj.form.raise + ' USDT'}
-                                            sales={obj.form.sale + ' ' + obj.projectToken}
+                                            sales={obj.form.sale + ' ' + obj.form.symbol}
                                             rate={'1 ' + obj.form.symbol + ' = ' + obj.form.idoPrice + ' USDT'}
                                             title={obj.form.projectname}
                                             isPending={true}

@@ -10,7 +10,6 @@ import EndedProjects from './components/EndedProjects.js';
 import PendingProjects from './components/PendingProjects.js';
 import BubblyButton from './components/BubblyButton.js';
 import RaiseButton from './components/RaiseButton.js';
-import $ from 'jquery';
 import { getProjects } from '@/services/api';
 import ExpandingContent from './components/ExpandedContent';
 import { useConnectWallet } from '@/components/ConnectWallet';
@@ -18,6 +17,8 @@ import { useWeb3React } from '@web3-react/core';
 import { API_URL } from '@/constants'
 import axios from 'axios';
 
+
+import moment from 'moment';
 
 const { Meta } = Card;
 
@@ -47,8 +48,6 @@ const Pool = props => {
     }
   }, [account]);
 
-
-
   // project variables
   useEffect(async () => {
     console.log("api url", API_URL())
@@ -76,15 +75,24 @@ const Pool = props => {
             if (obj.projectStatus === 'Ongoing') newOngoingData.push(obj);
             else if (obj.projectStatus === 'Upcoming') newUpcomingData.push(obj);
             else if (obj.projectStatus === 'Ended') newEndedData.push(obj);
+          });
+          console.log(API_URL());
 
-          }
-            // obj.projectStatus === 'Ongoing'
-            //   ? newOngoingData.push(obj)
-            //   : obj.projectStatus === 'Upcoming'
-            //     ? newUpcomingData.push(obj)
-            //     : newEndedData.push(obj)
-          );
-          console.log(API_URL())
+          // "2/22/2022 00:00:00 "
+          // TODO: fault in backend but parse it in frontend for now
+          newOngoingData.sort((a, b) => {
+            return moment.utc(a.saleStart, "M/D/YYYY hh:mm:ss ") > moment.utc(b.saleStart, "M/D/YYYY hh:mm:ss ") ? 1 : -1;
+          });
+
+          newUpcomingData.sort((a, b) => {
+            return moment.utc(a.saleStart, "M/D/YYYY hh:mm:ss ") > moment.utc(b.saleStart, "M/D/YYYY hh:mm:ss ") ? 1 : -1;
+          });
+
+          // show ended project in desencding order
+          newEndedData.sort((a, b) => {
+            return moment.utc(a.saleEnd, "M/D/YYYY hh:mm:ss ") < moment.utc(b.saleEnd, "M/D/YYYY hh:mm:ss ") ? 1 : -1;
+          });
+
           setOngoingData([...newOngoingData]);
           setUpcomingData([...newUpcomingData]);
           setEndedData([...newEndedData]);

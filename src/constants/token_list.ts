@@ -7,7 +7,7 @@ interface TokenInfo {
   logoURI: string,
   idOnCoingecko: string
 }
-
+//
 const BscMainNetTokenList: Array<TokenInfo> = [
   {
     name: 'USD Tether',
